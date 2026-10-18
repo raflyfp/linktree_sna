@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="100%" height="100%">
+  <defs>
+    <linearGradient id="crepeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F5F3FF"/>
+      <stop offset="50%" stop-color="#EDE9FE"/>
+      <stop offset="100%" stop-color="#DDD6FE"/>
+    </linearGradient>
+    <linearGradient id="primaryPurple" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8B5CF6"/>
+      <stop offset="100%" stop-color="#6D28D9"/>
+    </linearGradient>
+    <filter id="shadow2" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="12" stdDeviation="10" flood-color="#4C1D95" flood-opacity="0.15"/>
+    </filter>
+    <pattern id="crepeTexture" width="6" height="6" patternUnits="userSpaceOnUse">
+      <path d="M 0 3 L 6 3 M 3 0 L 3 6" stroke="#C4B5FD" stroke-width="0.75" opacity="0.6"/>
+    </pattern>
+  </defs>
+
+  <!-- Background Soft Aura -->
+  <circle cx="200" cy="150" r="120" fill="#F5F3FF"/>
+  <circle cx="200" cy="150" r="90" fill="#EDE9FE" opacity="0.6"/>
+
+  <g filter="url(#shadow2)">
+    <!-- Crepe Bandage Roll (3D perspective cylinder) -->
+    <g transform="translate(130, 80)">
+      <!-- Unrolled strip trailing off -->
+      <path d="M 70 120 C 120 130 180 140 210 160 L 200 185 C 160 165 110 155 70 145 Z" fill="url(#crepeGrad)" stroke="#8B5CF6" stroke-width="1.5"/>
+      <path d="M 70 120 C 120 130 180 140 210 160 L 200 185 C 160 165 110 155 70 145 Z" fill="url(#crepeTexture)"/>
+
+      <!-- Cylinder body -->
+      <rect x="20" y="20" width="100" height="90" rx="4" fill="url(#crepeGrad)" stroke="#8B5CF6" stroke-width="2"/>
+      <rect x="20" y="20" width="100" height="90" rx="4" fill="url(#crepeTexture)"/>
+      
+      <!-- Purple Brand Band around roll -->
+      <rect x="20" y="45" width="100" height="40" fill="url(#primaryPurple)"/>
+      <text x="70" y="70" fill="white" font-family="system-ui, sans-serif" font-weight="bold" font-size="13" text-anchor="middle" letter-spacing="1">POLICREPE</text>
+
+      <!-- Bottom ellipse for 3D look -->
+      <ellipse cx="70" cy="110" rx="50" ry="20" fill="url(#crepeGrad)" stroke="#8B5CF6" stroke-width="2"/>
+      <!-- Top ellipse -->
+      <ellipse cx="70" cy="20" rx="50" ry="20" fill="#F5F3FF" stroke="#8B5CF6" stroke-width="2"/>
+      <ellipse cx="70" cy="20" rx="20" ry="8" fill="#DDD6FE" stroke="#8B5CF6" stroke-width="1"/>
+
+      <!-- Metal Elastic Clips -->
+      <g transform="translate(160, 140) rotate(-10)">
+        <rect x="0" y="0" width="22" height="12" rx="3" fill="#E5E7EB" stroke="#6B7280" stroke-width="1"/>
+        <line x1="6" y1="2" x2="6" y2="10" stroke="#9CA3AF" stroke-width="1.5"/>
+        <line x1="16" y1="2" x2="16" y2="10" stroke="#9CA3AF" stroke-width="1.5"/>
+      </g>
+    </g>
+  </g>
+
+  <!-- Best Seller Badge -->
+  <g transform="translate(70, 50)">
+    <rect x="0" y="0" width="115" height="28" rx="14" fill="#6D28D9"/>
+    <text x="57" y="18" fill="white" font-family="system-ui, sans-serif" font-weight="bold" font-size="11" text-anchor="middle">👑 BEST SELLER</text>
+  </g>
+</svg>

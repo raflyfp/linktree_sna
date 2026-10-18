@@ -1,26 +1,151 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --primary-purple: #6D28D9;
+  --deep-purple: #4C1D95;
+  --violet: #8B5CF6;
+  --lavender: #EDE9FE;
+  --soft-background: #F5F3FF;
+  --island-green: #22C55E;
+  --white: #FFFFFF;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+@theme {
+  --color-brand-primary: #6D28D9;
+  --color-brand-deep: #4C1D95;
+  --color-brand-violet: #8B5CF6;
+  --color-brand-lavender: #EDE9FE;
+  --color-brand-soft: #F5F3FF;
+  --color-brand-green: #22C55E;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--soft-background);
+  color: #1F2937;
+  font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  overflow-x: hidden;
+}
+
+/* Custom Micro-Animations */
+@keyframes floatGentle {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes cloudDrift {
+  0% {
+    transform: translateX(-15px);
+  }
+  50% {
+    transform: translateX(15px);
+  }
+  100% {
+    transform: translateX(-15px);
+  }
+}
+
+@keyframes planeGlide {
+  0% {
+    transform: translate(-10px, 6px) rotate(-1deg);
+  }
+  50% {
+    transform: translate(12px, -6px) rotate(1deg);
+  }
+  100% {
+    transform: translate(-10px, 6px) rotate(-1deg);
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(109, 40, 217, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 12px rgba(109, 40, 217, 0);
+  }
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes bounceSubtle {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes waveGentle {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  20%, 60% {
+    transform: rotate(10deg);
+  }
+  40%, 80% {
+    transform: rotate(-6deg);
+  }
+}
+
+.animate-float {
+  animation: floatGentle 4s ease-in-out infinite;
+}
+
+.animate-cloud-drift {
+  animation: cloudDrift 16s ease-in-out infinite;
+}
+
+.animate-plane-glide {
+  animation: planeGlide 6s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 2.5s infinite;
+}
+
+.animate-marquee {
+  display: flex;
+  width: 200%;
+  animation: marquee 28s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+.animate-bounce-subtle {
+  animation: bounceSubtle 3s ease-in-out infinite;
+}
+
+.animate-wave-hand {
+  transform-origin: 70% 70%;
+  animation: waveGentle 3s ease-in-out infinite;
+}
+
+/* Accessibility: Respect prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

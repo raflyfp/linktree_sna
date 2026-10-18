@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { cityGroups } from "@/data/stores";
 import { MapCityGroup } from "@/types/store";
-import { Navigation, ExternalLink, ShoppingBag, X } from "lucide-react";
+import { Navigation, ExternalLink, ShoppingBag, X, MapPin } from "lucide-react";
 
 interface CityLayoutConfig {
   labelOffsetX: number;
@@ -95,6 +95,19 @@ interface IndonesiaSvgMapProps {
 export const IndonesiaSvgMap: React.FC<IndonesiaSvgMapProps> = () => {
   const [hoveredCity, setHoveredCity] = useState<MapCityGroup | null>(null);
   const [activeMultiCity, setActiveMultiCity] = useState<MapCityGroup | null>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll on mobile to center Java & Kalimantan pins on initial load
+  useEffect(() => {
+    if (scrollContainerRef.current) {
+      const scrollWidth = scrollContainerRef.current.scrollWidth;
+      const clientWidth = scrollContainerRef.current.clientWidth;
+      if (scrollWidth > clientWidth) {
+        // Center around Java (approx 35% of total width)
+        scrollContainerRef.current.scrollLeft = Math.max(0, scrollWidth * 0.22);
+      }
+    }
+  }, []);
 
   const handleCityClick = (group: MapCityGroup) => {
     // If city has 1 store, throw DIRECTLY to marketplace without modal!
@@ -103,7 +116,7 @@ export const IndonesiaSvgMap: React.FC<IndonesiaSvgMapProps> = () => {
       return;
     }
 
-    // If multi-store (Pasuruan), toggle quick 2-button launcher
+    // If multi-store (Pasuruan), toggle quick launcher
     if (activeMultiCity?.cityId === group.cityId) {
       setActiveMultiCity(null);
     } else {
@@ -113,31 +126,57 @@ export const IndonesiaSvgMap: React.FC<IndonesiaSvgMapProps> = () => {
 
   return (
     <div className="relative w-full overflow-hidden select-none">
-      {/* 1. Underlying Crisp Cartoon Map of Indonesia */}
-      <div className="relative w-full aspect-[2.5/1] min-h-[300px] sm:min-h-[440px] lg:min-h-[580px]">
-        <Image
-          src="/images/indonesia-cartoon-map.png"
-          alt="Peta Kartun Indonesia PC Store"
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover object-center"
-        />
+      {/* Mobile-Friendly Quick Branch Chips */}
+      <div className="md:hidden px-4 py-2.5 bg-[#2E0854]/90 border-y border-purple-900/60 flex items-center gap-2 overflow-x-auto scrollbar-none">
+        <span className="text-[11px] font-black uppercase text-amber-300 shrink-0 flex items-center gap-1">
+          <MapPin className="w-3.5 h-3.5 text-amber-400" />
+          Pilih Cabang:
+        </span>
+        {cityGroups.map((city) => (
+          <button
+            key={city.cityId}
+            onClick={() => handleCityClick(city)}
+            className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-bold transition-transform active:scale-95 flex items-center gap-1 ${
+              city.cityId === "pasuruan"
+                ? "bg-gradient-to-r from-amber-400 to-amber-500 text-purple-950 shadow-sm shadow-amber-500/20"
+                : "bg-white/15 text-white hover:bg-white/25 border border-white/15"
+            }`}
+          >
+            <span>{city.cityId === "pasuruan" ? "⭐ Pusat Pasuruan" : city.cityName}</span>
+          </button>
+        ))}
+      </div>
 
-        {/* Soft edge-blending gradients */}
-        <div className="absolute inset-x-0 top-0 h-16 sm:h-24 bg-gradient-to-b from-[#3B0764] to-transparent pointer-events-none" />
-        <div className="absolute inset-x-0 bottom-0 h-24 sm:h-36 bg-gradient-to-t from-[#EDE9FE] via-[#EDE9FE]/40 to-transparent pointer-events-none" />
+      {/* Swipeable Map Container for Mobile & Full Scaled Map on Desktop */}
+      <div
+        ref={scrollContainerRef}
+        className="w-full overflow-x-auto overflow-y-hidden scrollbar-none touch-pan-x"
+      >
+        <div className="relative min-w-[760px] md:min-w-full aspect-[2.5/1] w-full">
+          {/* 1. Underlying Crisp Cartoon Map of Indonesia */}
+          <Image
+            src="/images/indonesia-cartoon-map.png"
+            alt="Peta Kartun Indonesia PC Store"
+            fill
+            priority
+            sizes="(max-width: 768px) 760px, 100vw"
+            className="w-full h-full object-fill pointer-events-none"
+          />
 
-        {/* 2. Scalable SVG Overlay (viewBox 0 0 1000 400 matches 2.5:1 image aspect) */}
-        <svg
-          viewBox="0 0 1000 400"
-          className="absolute inset-0 w-full h-full pointer-events-auto"
-          preserveAspectRatio="xMidYMid meet"
-          role="region"
-          aria-label="Peta Interaktif Cabang PC Store Indonesia"
-        >
-          <defs>
-            <filter id="pinShadow" x="-50%" y="-50%" width="200%" height="200%">
+          {/* Soft edge-blending gradients */}
+          <div className="absolute inset-x-0 top-0 h-16 sm:h-24 bg-gradient-to-b from-[#3B0764] to-transparent pointer-events-none" />
+          <div className="absolute inset-x-0 bottom-0 h-24 sm:h-36 bg-gradient-to-t from-[#EDE9FE] via-[#EDE9FE]/40 to-transparent pointer-events-none" />
+
+          {/* 2. Scalable SVG Overlay (viewBox 0 0 1000 400 exactly matches 2.5:1 image aspect) */}
+          <svg
+            viewBox="0 0 1000 400"
+            className="absolute inset-0 w-full h-full pointer-events-auto"
+            preserveAspectRatio="none"
+            role="region"
+            aria-label="Peta Interaktif Cabang PC Store Indonesia"
+          >
+            <defs>
+              <filter id="pinShadow" x="-50%" y="-50%" width="200%" height="200%">
               <feDropShadow dx="0" dy="5" stdDeviation="4" floodColor="#3B0764" floodOpacity="0.75" />
             </filter>
           </defs>
@@ -281,63 +320,65 @@ export const IndonesiaSvgMap: React.FC<IndonesiaSvgMapProps> = () => {
           })}
         </svg>
 
-        {/* 3. Direct Fast Launcher Popover for Multi-Store (Pasuruan) */}
-        {activeMultiCity && (
-          <div
-            className="absolute z-30 p-3 sm:p-4 rounded-3xl bg-white shadow-2xl border-2 border-purple-300 max-w-[280px] sm:max-w-xs animate-in zoom-in-95 duration-150"
-            style={{
-              left: `${Math.min(75, Math.max(20, activeMultiCity.coordinates.x))}%`,
-              top: `${Math.min(70, Math.max(30, activeMultiCity.coordinates.y - 12))}%`,
-              transform: "translate(-50%, -100%)",
-            }}
-          >
-            <div className="flex items-center justify-between gap-2 pb-2 mb-2 border-b border-purple-100">
-              <span className="text-xs font-black text-[#4C1D95]">
+        {/* 3. Guide Hints */}
+        <div className="absolute top-3 left-3 sm:top-6 sm:left-6 z-10 flex items-center gap-2 px-3 py-1.5 sm:px-3.5 sm:py-1.5 rounded-full bg-white/95 backdrop-blur-md shadow-md text-[11px] sm:text-xs font-bold text-[#4C1D95] border border-purple-200">
+          <Navigation className="w-3.5 h-3.5 text-[#8B5CF6] animate-pulse shrink-0" />
+          <span>Klik pin di peta untuk membuka marketplace resmi</span>
+        </div>
+
+        {/* Swipe Hint on Mobile */}
+        <div className="md:hidden absolute top-3 right-3 z-10 flex items-center gap-1 px-2.5 py-1 rounded-full bg-purple-900/90 backdrop-blur-md text-[10px] font-bold text-amber-300 border border-purple-600/50 shadow-md">
+          <span>👉 Geser Peta</span>
+        </div>
+      </div>
+      </div>
+
+      {/* 4. Responsive Modal Launcher for Multi-Store Cities (Pasuruan) */}
+      {activeMultiCity && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-purple-950/70 backdrop-blur-xs animate-in fade-in">
+          <div className="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border-2 border-purple-300 relative text-gray-900 animate-in zoom-in-95 duration-150">
+            <div className="flex items-center justify-between gap-2 pb-2 mb-3 border-b border-purple-100">
+              <span className="text-base font-black text-[#4C1D95]">
                 {activeMultiCity.cityName}
               </span>
               <button
                 onClick={() => setActiveMultiCity(null)}
-                className="p-1 rounded-full text-gray-400 hover:text-gray-700 hover:bg-purple-50"
+                className="p-1.5 rounded-full text-gray-400 hover:text-gray-700 hover:bg-purple-50 transition-colors"
                 aria-label="Tutup"
               >
-                <X className="w-3.5 h-3.5" />
+                <X className="w-4 h-4" />
               </button>
             </div>
 
-            <p className="text-[11px] text-gray-500 mb-2.5 font-medium">
-              Pilih marketplace resmi untuk langsung membuka toko:
+            <p className="text-xs text-gray-600 mb-4 font-medium">
+              Pilih marketplace resmi pusat yang ingin Anda tuju:
             </p>
 
-            <div className="space-y-2">
+            <div className="space-y-2.5">
               {activeMultiCity.stores.map((store) => (
                 <a
                   key={store.id}
                   href={store.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold text-white shadow-xs transition-transform hover:scale-[1.02] ${
+                  onClick={() => setActiveMultiCity(null)}
+                  className={`w-full flex items-center justify-between p-3.5 rounded-2xl text-xs font-bold text-white shadow-xs transition-transform hover:scale-[1.02] ${
                     store.platform === "tiktok"
                       ? "bg-black hover:bg-gray-900"
                       : "bg-[#EE4D2D] hover:bg-[#d63f21]"
                   }`}
                 >
                   <span className="flex items-center gap-2">
-                    <ShoppingBag className="w-3.5 h-3.5" />
-                    {store.platformLabel}
+                    <ShoppingBag className="w-4 h-4" />
+                    {store.platformLabel} ({store.name})
                   </span>
-                  <ExternalLink className="w-3.5 h-3.5" />
+                  <ExternalLink className="w-4 h-4" />
                 </a>
               ))}
             </div>
           </div>
-        )}
-
-        {/* 4. Top Guide Hint */}
-        <div className="absolute top-4 left-4 sm:top-6 sm:left-6 z-10 flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/95 backdrop-blur-md shadow-md text-xs font-bold text-[#4C1D95] border border-purple-200">
-          <Navigation className="w-3.5 h-3.5 text-[#8B5CF6] animate-pulse" />
-          <span>Klik pin di peta untuk langsung menuju marketplace resmi</span>
         </div>
-      </div>
+      )}
     </div>
   );
 };

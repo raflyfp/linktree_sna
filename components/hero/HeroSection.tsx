@@ -16,21 +16,21 @@ export const HeroSection: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-10 pb-2 relative z-10">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           {/* Left Text */}
-          <div className="text-center md:text-left space-y-3 max-w-2xl">
+          <div className="text-center md:text-left space-y-3.5 max-w-2xl">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 border border-white/20 backdrop-blur-md text-xs sm:text-sm text-purple-200 font-bold">
               <Sparkles className="w-4 h-4 text-amber-300 animate-spin" style={{ animationDuration: "8s" }} />
-              <span>Official Store Jaringan PC Store</span>
+              <span>Official Store Jaringan PC Store Indonesia</span>
             </div>
 
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-[1.18]">
-              Layanan &amp; Marketplace Resmi{" "}
+              Selamat Datang di{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-purple-200 to-white">
-                Seluruh Indonesia
+                Official PC Store
               </span>
             </h1>
 
             <p className="text-sm sm:text-base text-purple-200/90 leading-relaxed font-normal">
-              Klik pada lokasi kota di <strong>Peta Indonesia</strong> untuk langsung berbelanja produk perawatan medis di official marketplace resmi cabang kami.
+              Pusat produk fiksasi medis &amp; perban elastis berkualitas (<strong>Polifix</strong> &amp; <strong>Policrepe</strong>). Klik lokasi kota pada <strong>Peta Indonesia</strong> di bawah untuk langsung berbelanja di official marketplace cabang terdekat.
             </p>
           </div>
 
@@ -47,8 +47,11 @@ export const HeroSection: React.FC = () => {
                 />
               </div>
 
-              {/* Speech bubble "Selamat Datang!" */}
-              <div className="absolute -top-2 -right-2 w-28 sm:w-36 h-12 sm:h-14 animate-float" style={{ animationDelay: "-2s" }}>
+              {/* Speech bubble gambar asli "Selamat Datang!" digeser lebih ke kanan */}
+              <div
+                className="absolute -top-3 -right-6 sm:-top-2 sm:-right-10 w-28 sm:w-36 h-12 sm:h-14 animate-float z-20"
+                style={{ animationDelay: "-2s" }}
+              >
                 <Image
                   src="/images/badge-welcome.png"
                   alt="Selamat Datang!"

@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bottleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#EDE9FE"/>
+    </linearGradient>
+    <linearGradient id="capGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8B5CF6"/>
+      <stop offset="100%" stop-color="#6D28D9"/>
+    </linearGradient>
+    <linearGradient id="liquidGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#EF4444"/>
+      <stop offset="100%" stop-color="#B91C1C"/>
+    </linearGradient>
+    <filter id="shadowPoli" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="12" stdDeviation="10" flood-color="#4C1D95" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+
+  <!-- Background Soft Aura -->
+  <circle cx="200" cy="150" r="120" fill="#F5F3FF"/>
+  <circle cx="200" cy="150" r="90" fill="#EDE9FE" opacity="0.6"/>
+
+  <g filter="url(#shadowPoli)">
+    <!-- Main Pump Bottle Body -->
+    <rect x="120" y="90" width="100" height="135" rx="20" fill="url(#bottleGrad)" stroke="#DDD6FE" stroke-width="2"/>
+    
+    <!-- Red Liquid Band -->
+    <rect x="120" y="115" width="100" height="48" fill="url(#liquidGrad)"/>
+    
+    <!-- Label -->
+    <rect x="135" y="140" width="70" height="50" rx="8" fill="white" stroke="#EDE9FE" stroke-width="1.5"/>
+    <text x="170" y="158" fill="#1E1B4B" font-family="system-ui, sans-serif" font-weight="900" font-size="12" text-anchor="middle" letter-spacing="0.5">POLIDINE</text>
+    <text x="170" y="172" fill="#6D28D9" font-family="system-ui, sans-serif" font-weight="bold" font-size="8" text-anchor="middle">ANTISEPTIC</text>
+    <text x="170" y="182" fill="#6B7280" font-family="system-ui, sans-serif" font-size="6.5" text-anchor="middle">Povidone Iodine 10%</text>
+
+    <!-- Pump Neck & Head -->
+    <rect x="160" y="70" width="20" height="20" rx="3" fill="#E5E7EB" stroke="#D1D5DB" stroke-width="1"/>
+    <rect x="150" y="60" width="40" height="12" rx="4" fill="url(#capGrad)"/>
+    <path d="M 170 60 L 170 48 L 135 48 C 130 48 130 54 135 54 L 170 54 Z" fill="url(#capGrad)"/>
+
+    <!-- Small Companion Dropper Bottle -->
+    <g transform="translate(230, 110)">
+      <rect x="0" y="30" width="45" height="85" rx="12" fill="#22C55E" opacity="0.9" stroke="#16A34A" stroke-width="1.5"/>
+      <rect x="8" y="55" width="29" height="35" rx="4" fill="white"/>
+      <text x="22.5" y="68" fill="#15803D" font-family="system-ui, sans-serif" font-weight="bold" font-size="6.5" text-anchor="middle">POLIDINE</text>
+      <text x="22.5" y="78" fill="#6B7280" font-family="system-ui, sans-serif" font-size="5" text-anchor="middle">60ml</text>
+      <!-- Cap -->
+      <rect x="10" y="12" width="25" height="18" rx="4" fill="white" stroke="#D1D5DB" stroke-width="1"/>
+      <line x1="15" y1="15" x2="15" y2="27" stroke="#E5E7EB" stroke-width="1"/>
+      <line x1="20" y1="15" x2="20" y2="27" stroke="#E5E7EB" stroke-width="1"/>
+      <line x1="25" y1="15" x2="25" y2="27" stroke="#E5E7EB" stroke-width="1"/>
+      <line x1="30" y1="15" x2="30" y2="27" stroke="#E5E7EB" stroke-width="1"/>
+    </g>
+  </g>
+
+  <!-- Proteksi Kuman Badge -->
+  <g transform="translate(70, 50)">
+    <rect x="0" y="0" width="130" height="28" rx="14" fill="#6D28D9"/>
+    <text x="65" y="18" fill="white" font-family="system-ui, sans-serif" font-weight="bold" font-size="10.5" text-anchor="middle">🛡️ ANTISEPTIK RESMI</text>
+  </g>
+</svg>

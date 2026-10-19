@@ -94,17 +94,17 @@ export const ScrollGreetingMascot: React.FC = () => {
           </div>
         </div>
 
-        {/* Mascot Character Image (100% Transparent PNG) */}
+        {/* Chibi Mascot Character Image (100% Transparent PNG) */}
         <div
           onClick={scrollToTop}
-          className="relative w-20 h-24 sm:w-28 sm:h-32 cursor-pointer animate-bounce-subtle transition-transform hover:scale-110 active:scale-95"
+          className="relative w-20 h-24 sm:w-26 sm:h-30 cursor-pointer animate-bounce-subtle transition-transform hover:scale-115 hover:rotate-6 active:scale-95"
           title="Klik untuk kembali ke atas"
         >
           <Image
-            src="/images/mascot-wave.png"
-            alt="Maskot PC Store Menyapa Pengunjung"
+            src="/images/products/poligyp-chibi-cheer.png"
+            alt="Maskot Chibi PC Store Menyapa Pengunjung"
             fill
-            className="object-contain drop-shadow-xl"
+            className="object-contain drop-shadow-2xl"
             priority
           />
         </div>

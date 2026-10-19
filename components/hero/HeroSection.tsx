@@ -34,34 +34,60 @@ export const HeroSection: React.FC = () => {
             </p>
           </div>
 
-          {/* Right Mascot (100% Transparent PNG, Zero Black Borders) */}
+          {/* Right Mascot: Cute 3D Polifix Chibi Character with Welcome Speech Bubble */}
           <div className="relative flex items-center justify-center shrink-0">
-            <div className="relative w-36 h-36 sm:w-48 sm:h-48">
-              <div className="relative w-full h-full animate-float">
+            {/* Ambient Purple/Amber Glow */}
+            <div className="absolute w-48 h-48 bg-amber-400/20 rounded-full blur-3xl pointer-events-none animate-pulse-glow" />
+
+            <div className="relative w-40 h-40 sm:w-52 sm:h-52">
+              <div className="relative w-full h-full animate-float hover:scale-105 transition-transform duration-300">
                 <Image
-                  src="/images/mascot-welcome.png"
-                  alt="Maskot Karyawan PC Store"
+                  src="/images/products/polifix-chibi-thumbsup.png"
+                  alt="Maskot Polifix Chibi Resmi PC Store"
                   fill
-                  className="object-contain"
+                  className="object-contain drop-shadow-2xl"
                   priority
                 />
               </div>
 
-              {/* Speech bubble gambar asli "Selamat Datang!" digeser lebih ke kanan */}
+              {/* Speech bubble "Selamat Datang!" */}
               <div
-                className="absolute -top-3 -right-6 sm:-top-2 sm:-right-10 w-28 sm:w-36 h-12 sm:h-14 animate-float z-20"
-                style={{ animationDelay: "-2s" }}
+                className="absolute -top-3 -right-6 sm:-top-2 sm:-right-8 w-28 sm:w-36 h-12 sm:h-14 animate-bounce-subtle z-20"
+                style={{ animationDelay: "-1.5s" }}
               >
                 <Image
                   src="/images/badge-welcome.png"
                   alt="Selamat Datang!"
                   fill
-                  className="object-contain drop-shadow-lg"
+                  className="object-contain drop-shadow-xl"
                   priority
                 />
               </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Floating Animated Chibi Background Companions in Hero */}
+      <div className="absolute top-12 left-6 lg:left-12 opacity-35 hover:opacity-80 transition-opacity pointer-events-none hidden sm:block animate-float" style={{ animationDuration: "6s" }}>
+        <div className="relative w-16 h-16 sm:w-20 sm:h-20">
+          <Image
+            src="/images/products/poligyp-chibi-cheer.png"
+            alt="Poligyp Cheer Floating"
+            fill
+            className="object-contain drop-shadow-lg"
+          />
+        </div>
+      </div>
+
+      <div className="absolute bottom-6 right-8 lg:right-20 opacity-30 hover:opacity-80 transition-opacity pointer-events-none hidden sm:block animate-float" style={{ animationDuration: "7s", animationDelay: "-3s" }}>
+        <div className="relative w-16 h-16 sm:w-22 sm:h-22">
+          <Image
+            src="/images/products/caressa-cotton-balls.png"
+            alt="Caressa Floating"
+            fill
+            className="object-contain drop-shadow-lg"
+          />
         </div>
       </div>
 

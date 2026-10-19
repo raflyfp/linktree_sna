@@ -6,7 +6,13 @@ export interface Product {
   shortDescription: string;
   isBestSeller: boolean;
   badge?: string;
-  imageUrl?: string;
+  imageUrl: string;
+  chibiMascot?: string;
   isPlaceholder?: boolean;
-  targetBranchId?: string; // Links to preferred store if any
+  targetBranchId?: string;
+  features?: string[];
+  chibiQuote?: string;
+  rating?: string;
+  soldCount?: string;
 }
+

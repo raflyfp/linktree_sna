@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 import { MapCityGroup } from "@/types/store";
 import { X, ExternalLink, MapPin, ShoppingBag, Store, Sparkles } from "lucide-react";
 
@@ -57,34 +58,55 @@ export const BranchModal: React.FC<BranchModalProps> = ({ cityGroup, onClose }) 
         </p>
 
         {/* Store Cards */}
-        <div className="space-y-3 mt-4">
+        <div className="space-y-3.5 mt-4">
           {cityGroup.stores.map((store) => (
             <div
               key={store.id}
-              className="p-4 rounded-2xl bg-gradient-to-r from-purple-50/60 to-white border border-purple-100/80 hover:border-purple-300 transition-all shadow-xs"
+              className="p-4 rounded-3xl bg-gradient-to-r from-purple-50/70 via-white to-purple-50/40 border border-purple-200/80 hover:border-purple-400 transition-all shadow-sm hover:shadow-md group"
             >
-              <div className="flex items-start justify-between gap-2">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h4 className="font-bold text-gray-900 text-base">{store.name}</h4>
+              <div className="flex items-start gap-3">
+                {store.chibiImage && (
+                  <div className="relative w-14 h-14 shrink-0 bg-white rounded-2xl border border-purple-100 p-1 flex items-center justify-center shadow-xs">
+                    <Image
+                      src={store.chibiImage}
+                      alt={store.name}
+                      fill
+                      className="object-contain group-hover:scale-110 group-hover:rotate-6 transition-transform"
+                    />
                   </div>
+                )}
+
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between gap-2">
+                    <h4 className="font-black text-gray-900 text-sm sm:text-base group-hover:text-[#6D28D9] transition-colors leading-snug">
+                      {store.name}
+                    </h4>
+                    <span
+                      className={`text-[10px] font-black px-2.5 py-0.5 rounded-full shrink-0 shadow-xs ${
+                        store.platform === "tiktok"
+                          ? "bg-black text-white"
+                          : "bg-[#EE4D2D] text-white"
+                      }`}
+                    >
+                      {store.platformLabel}
+                    </span>
+                  </div>
+
                   <p className="text-xs text-gray-600 mt-1 leading-relaxed">
                     {store.description}
                   </p>
+
+                  {store.deliverySpeed && (
+                    <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg bg-emerald-50 text-[10px] font-black text-emerald-700 mt-2 border border-emerald-100">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-radar" />
+                      <span>{store.deliverySpeed}</span>
+                    </div>
+                  )}
                 </div>
-                <span
-                  className={`text-[11px] font-bold px-2 py-0.5 rounded-full shrink-0 ${
-                    store.platform === "tiktok"
-                      ? "bg-black text-white"
-                      : "bg-[#EE4D2D]/10 text-[#EE4D2D]"
-                  }`}
-                >
-                  {store.platformLabel}
-                </span>
               </div>
 
-              <div className="mt-4 pt-3 border-t border-purple-100/50 flex items-center justify-between">
-                <span className="text-xs text-purple-700 font-medium flex items-center gap-1">
+              <div className="mt-3.5 pt-3 border-t border-purple-100/60 flex items-center justify-between gap-2">
+                <span className="text-xs text-purple-700 font-bold flex items-center gap-1">
                   <Store className="w-3.5 h-3.5" />
                   {store.badge || "Cabang Resmi"}
                 </span>
@@ -93,15 +115,15 @@ export const BranchModal: React.FC<BranchModalProps> = ({ cityGroup, onClose }) 
                   href={store.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-white shadow-xs hover:shadow-sm transition-all hover:scale-[1.02] ${
+                  className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-black text-white shadow-xs hover:shadow-md transition-all hover:scale-[1.03] shimmer-effect ${
                     store.platform === "tiktok"
                       ? "bg-gray-900 hover:bg-black"
                       : "bg-[#EE4D2D] hover:bg-[#d63f21]"
                   }`}
                 >
                   <ShoppingBag className="w-3.5 h-3.5" />
-                  <span>Buka Toko Resmi</span>
-                  <ExternalLink className="w-3.5 h-3.5" />
+                  <span>Kunjungi Toko</span>
+                  <ExternalLink className="w-3.5 h-3.5 opacity-80" />
                 </a>
               </div>
             </div>

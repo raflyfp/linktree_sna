@@ -160,6 +160,25 @@ body {
   }
 }
 
+@keyframes walkBob {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-6px) rotate(-6deg);
+  }
+  50% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  75% {
+    transform: translateY(-6px) rotate(6deg);
+  }
+}
+
+.animate-walk {
+  animation: walkBob 0.75s ease-in-out infinite;
+}
+
 .animate-float {
   animation: floatGentle 4s ease-in-out infinite;
 }
@@ -178,8 +197,8 @@ body {
 
 .animate-marquee {
   display: flex;
-  width: 200%;
-  animation: marquee 28s linear infinite;
+  width: max-content;
+  animation: marquee 35s linear infinite;
 }
 
 .animate-marquee:hover {
@@ -235,6 +254,15 @@ body {
 
 .shimmer-effect:hover::after {
   animation: shimmerSlide 1.2s ease-in-out infinite;
+}
+
+/* Hide scrollbars completely across all browsers */
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
 }
 
 /* Accessibility: Respect prefers-reduced-motion */

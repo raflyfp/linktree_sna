@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { siteConfig } from "@/data/config";
+import { PriorityCareLogo } from "@/components/ui/PriorityCareLogo";
 import { Menu, X, MessageCircle, MapPin } from "lucide-react";
 
 interface NavbarProps {
@@ -15,17 +16,18 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenWhatsAppModal }) => {
     <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-purple-100 shadow-xs transition-all">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
-          {/* Brand Logo */}
+          {/* Brand Logo: Official Priority Care Logo */}
           <a href="#hero" className="flex items-center gap-3 group focus:outline-hidden focus:ring-2 focus:ring-purple-400 rounded-xl p-1">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#6D28D9] via-[#8B5CF6] to-[#A78BFA] flex items-center justify-center text-white shadow-md shadow-purple-500/20 group-hover:scale-105 transition-transform">
-              <span className="font-extrabold text-xl tracking-tight">PC</span>
-            </div>
-            <div className="flex flex-col">
-              <span className="font-black text-xl text-[#4C1D95] tracking-tight leading-none">
-                PC STORE
-              </span>
-              <span className="text-xs text-purple-600/80 font-medium mt-1">
-                Official Healthcare &amp; Care
+            <PriorityCareLogo size="sm" withShadow={false} />
+            <div className="hidden lg:flex flex-col">
+              <div className="flex items-center gap-1.5">
+                <span className="text-[11px] text-purple-700 font-bold uppercase tracking-wider">
+                  Official Network
+                </span>
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              </div>
+              <span className="text-[10px] text-gray-500 font-medium">
+                Healthcare &amp; Medical Store
               </span>
             </div>
           </a>

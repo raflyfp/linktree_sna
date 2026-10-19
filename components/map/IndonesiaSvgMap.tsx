@@ -125,9 +125,9 @@ export const IndonesiaSvgMap: React.FC<IndonesiaSvgMapProps> = () => {
   };
 
   return (
-    <div className="relative w-full overflow-hidden select-none">
-      {/* Mobile-Friendly Quick Branch Chips */}
-      <div className="md:hidden px-4 py-2.5 bg-[#2E0854]/90 border-y border-purple-900/60 flex items-center gap-2 overflow-x-auto scrollbar-none">
+    <div className="relative w-full select-none">
+      {/* Mobile-Friendly Quick Branch Chips (No borders, 100% seamless) */}
+      <div className="md:hidden px-4 py-2 bg-transparent flex items-center gap-2 overflow-x-auto scrollbar-none">
         <span className="text-[11px] font-black uppercase text-amber-300 shrink-0 flex items-center gap-1">
           <MapPin className="w-3.5 h-3.5 text-amber-400" />
           Pilih Cabang:
@@ -150,7 +150,7 @@ export const IndonesiaSvgMap: React.FC<IndonesiaSvgMapProps> = () => {
       {/* Swipeable Map Container for Mobile & Full Scaled Map on Desktop */}
       <div
         ref={scrollContainerRef}
-        className="w-full overflow-x-auto overflow-y-hidden scrollbar-none touch-pan-x"
+        className="w-full overflow-x-auto scrollbar-none touch-pan-x"
       >
         <div className="relative min-w-[760px] md:min-w-full aspect-[2.5/1] w-full">
           {/* 1. Underlying Crisp Cartoon Map of Indonesia */}
@@ -163,9 +163,8 @@ export const IndonesiaSvgMap: React.FC<IndonesiaSvgMapProps> = () => {
             className="w-full h-full object-fill pointer-events-none"
           />
 
-          {/* Soft edge-blending gradients */}
-          <div className="absolute inset-x-0 top-0 h-16 sm:h-24 bg-gradient-to-b from-[#3B0764] to-transparent pointer-events-none" />
-          <div className="absolute inset-x-0 bottom-0 h-24 sm:h-36 bg-gradient-to-t from-[#EDE9FE] via-[#EDE9FE]/40 to-transparent pointer-events-none" />
+          {/* Smooth top-edge blending gradient connecting seamlessly with Hero (Zero Lines) */}
+          <div className="absolute inset-x-0 top-0 h-28 sm:h-44 bg-gradient-to-b from-[#3B0764] via-[#3B0764]/70 to-transparent pointer-events-none z-10" />
 
           {/* 2. Scalable SVG Overlay (viewBox 0 0 1000 400 exactly matches 2.5:1 image aspect) */}
           <svg

@@ -153,7 +153,7 @@ export const IndonesiaSvgMap: React.FC<IndonesiaSvgMapProps> = () => {
         className="w-full overflow-x-auto scrollbar-none touch-pan-x"
       >
         <div className="relative min-w-[760px] md:min-w-full aspect-[2.5/1] w-full">
-          {/* 1. Underlying Crisp Cartoon Map of Indonesia */}
+          {/* 1. Underlying Crisp Cartoon Map of Indonesia (100% Clean, No Dark Overlay) */}
           <Image
             src="/images/indonesia-cartoon-map.png"
             alt="Peta Kartun Indonesia PC Store"
@@ -162,9 +162,6 @@ export const IndonesiaSvgMap: React.FC<IndonesiaSvgMapProps> = () => {
             sizes="(max-width: 768px) 760px, 100vw"
             className="w-full h-full object-fill pointer-events-none"
           />
-
-          {/* Smooth top-edge blending gradient connecting seamlessly with Hero (Zero Lines) */}
-          <div className="absolute inset-x-0 top-0 h-28 sm:h-44 bg-gradient-to-b from-[#3B0764] via-[#3B0764]/70 to-transparent pointer-events-none z-10" />
 
           {/* 2. Scalable SVG Overlay (viewBox 0 0 1000 400 exactly matches 2.5:1 image aspect) */}
           <svg

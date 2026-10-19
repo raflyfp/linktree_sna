@@ -12,13 +12,11 @@ export const HeroSection: React.FC = () => {
   const pasuruanGroup = cityGroups.find((c) => c.cityId === "pasuruan");
 
   return (
-    <section id="hero" className="relative w-full bg-[#3B0764] text-white overflow-hidden">
-      {/* Ambient Purple Light */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-96 bg-purple-500/15 rounded-full blur-3xl pointer-events-none" />
-
-      {/* Header Intro Area: Priority Care Logo Combined Directly with Greeting */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-5 sm:pt-6 pb-2 relative z-10">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-5 sm:gap-6">
+    <section id="hero" className="relative w-full bg-[#5537EA] text-white overflow-hidden">
+      {/* Header Intro Area: Smooth gradient from deep purple down to map ocean color */}
+      <div className="w-full bg-gradient-to-b from-[#2A084E] via-[#3B147D] to-[#5537EA] pt-5 sm:pt-7 pb-4 sm:pb-6 relative z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-5 sm:gap-6">
           {/* Left Text directly combined with Priority Care Logo */}
           <div className="text-center md:text-left space-y-2.5 max-w-2xl">
             {/* Directly combined row: Priority Care Logo Badge + Official Network Badge */}
@@ -75,6 +73,7 @@ export const HeroSection: React.FC = () => {
           </div>
         </div>
       </div>
+    </div>
 
       {/* Floating Animated Chibi Background Companions in Hero Sky */}
       <div className="absolute top-32 left-4 lg:left-10 opacity-40 hover:opacity-100 transition-opacity pointer-events-none hidden sm:block animate-float" style={{ animationDuration: "5.5s" }}>

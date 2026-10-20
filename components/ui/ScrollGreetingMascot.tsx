@@ -64,36 +64,39 @@ export const ScrollGreetingMascot: React.FC = () => {
         {/* Dismiss Button */}
         <button
           onClick={() => setIsDismissed(true)}
-          className="absolute -top-2.5 -right-2.5 z-20 w-6 h-6 rounded-full bg-white border border-purple-200 text-gray-400 hover:text-gray-700 hover:bg-purple-100 flex items-center justify-center shadow-md transition-colors"
+          className="absolute -top-2.5 -right-2.5 z-20 w-6 h-6 rounded-full bg-purple-950/90 border border-purple-300/50 text-purple-200 hover:text-white hover:bg-purple-800 flex items-center justify-center shadow-md transition-colors"
           aria-label="Tutup sapaan maskot"
         >
           <X className="w-3.5 h-3.5" />
         </button>
 
-        {/* Dynamic Speech Bubble */}
-        <div className="mb-2 p-3 sm:p-3.5 rounded-2xl bg-white/95 backdrop-blur-md border-2 border-purple-200 shadow-xl text-left hover:border-purple-400 transition-all">
-          <div className="flex items-center gap-1.5 text-[11px] font-extrabold text-[#6D28D9] mb-1">
-            <Sparkles className="w-3.5 h-3.5 text-amber-500 animate-spin" style={{ animationDuration: "5s" }} />
+        {/* Dynamic Cloud-Style Speech Bubble matching Map Gradient */}
+        <div className="relative mb-2.5 p-3.5 sm:p-4 rounded-3xl bg-gradient-to-br from-[#2A084E]/95 via-[#3B147D]/95 to-[#5537EA]/95 text-white backdrop-blur-md border border-purple-300/40 shadow-2xl text-left hover:border-purple-300/70 transition-all">
+          {/* Cloud Speech Bubble Pointer Tail pointing to mascot */}
+          <div className="absolute -bottom-1.5 left-7 w-3.5 h-3.5 bg-[#4A269B] rotate-45 border-r border-b border-purple-300/40" />
+
+          <div className="flex items-center gap-1.5 text-[11px] font-black text-amber-300 mb-1">
+            <Sparkles className="w-3.5 h-3.5 text-amber-400 animate-spin" style={{ animationDuration: "5s" }} />
             <span>PC Store Assistant</span>
           </div>
 
-          <p className="text-xs text-gray-700 leading-snug font-medium min-h-[32px] transition-all">
+          <p className="text-xs text-white/95 leading-snug font-medium min-h-[32px] transition-all">
             {greetingMessages[msgIndex]}
           </p>
 
-          <div className="flex items-center gap-2 mt-2 pt-2 border-t border-purple-100">
+          <div className="flex items-center gap-2 mt-2 pt-2 border-t border-white/15">
             <button
               onClick={scrollToStores}
-              className="inline-flex items-center gap-1 text-[10px] font-bold text-[#6D28D9] hover:text-[#4C1D95] bg-purple-50 hover:bg-purple-100 px-2 py-1 rounded-lg transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1 text-[10px] font-bold text-white bg-white/15 hover:bg-white/25 border border-white/20 px-2.5 py-1 rounded-full transition-all cursor-pointer"
             >
-              <ShoppingBag className="w-3 h-3" />
+              <ShoppingBag className="w-3 h-3 text-purple-200" />
               Marketplace
             </button>
             <button
               onClick={scrollToProducts}
-              className="inline-flex items-center gap-1 text-[10px] font-bold text-[#8B5CF6] hover:text-[#6D28D9] bg-purple-50 hover:bg-purple-100 px-2 py-1 rounded-lg transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1 text-[10px] font-black text-purple-950 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 px-2.5 py-1 rounded-full shadow-sm shadow-amber-500/20 transition-all cursor-pointer"
             >
-              <Package className="w-3 h-3" />
+              <Package className="w-3 h-3 text-purple-900" />
               Produk
             </button>
           </div>

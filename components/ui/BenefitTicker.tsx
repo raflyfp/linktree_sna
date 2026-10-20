@@ -97,8 +97,8 @@ export const BenefitTicker: React.FC = () => {
       aria-label="Parade Karakter Produk PC Store di Atas Awan"
       className="relative w-full overflow-hidden select-none -mt-4 sm:-mt-8 pt-3 pb-0 z-20 pointer-events-auto"
     >
-      {/* 1. Seamless Gradient Connector from Map Ocean to Soft Sky */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#4C1D95]/30 to-[#F5F3FF]/90 pointer-events-none" />
+      {/* 1. Seamless Gradient Connector Continuing the Map's Ocean Gradient into Fluffy Clouds */}
+      <div className="absolute inset-0 bg-gradient-to-b from-[#5537EA] via-[#3B147D] to-[#2A084E] pointer-events-none" />
 
       {/* 3. Mascots Walking Closely Together (Dempetan & Zero Blank Gaps) */}
       <div className="relative z-10 pt-2 pb-0 overflow-hidden">

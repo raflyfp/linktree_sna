@@ -18,63 +18,63 @@ export const HeroSection: React.FC = () => {
       <div className="w-full bg-gradient-to-b from-[#2A084E] via-[#3B147D] to-[#5537EA] pt-5 sm:pt-7 pb-4 sm:pb-6 relative z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-5 sm:gap-6">
-          {/* Left Text directly combined with Priority Care Logo */}
-          <div className="text-center md:text-left space-y-2.5 max-w-2xl">
-            {/* Directly combined row: Priority Care Logo Badge + Official Network Badge */}
-            <div className="flex items-center gap-3 justify-center md:justify-start flex-wrap">
-              <PriorityCareLogo size="sm" />
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 border border-white/20 backdrop-blur-md text-xs text-purple-200 font-bold shadow-xs">
+            {/* Left Text directly combined with Priority Care Logo */}
+            <div className="text-center md:text-left space-y-2.5 max-w-2xl">
+              {/* Directly combined row: Priority Care Logo Badge + Official Network Badge */}
+              <div className="flex items-center gap-3 justify-center md:justify-start flex-wrap">
+                <PriorityCareLogo size="sm" />
+                {/* <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 border border-white/20 backdrop-blur-md text-xs text-purple-200 font-bold shadow-xs">
                 <Sparkles className="w-3.5 h-3.5 text-amber-300 animate-spin" style={{ animationDuration: "8s" }} />
                 <span>Jaringan Resmi Indonesia</span>
+              </div> */}
               </div>
+
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight leading-tight">
+                Selamat Datang di{" "}
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-rose-300 to-purple-200">
+                  Priority Care
+                </span>
+              </h1>
+
+              <p className="text-xs sm:text-sm text-purple-200/90 leading-relaxed font-normal">
+                Pusat produk medis &amp; perban elastis berkualitas (<strong>Polifix</strong> &amp; <strong>Policrepe</strong>).
+              </p>
             </div>
 
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight leading-tight">
-              Selamat Datang di{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-rose-300 to-purple-200">
-                Priority Care
-              </span>
-            </h1>
+            {/* Right Mascot: Cute 3D Polifix Chibi Character with Welcome Speech Bubble */}
+            <div className="relative flex items-center justify-center shrink-0 pr-4 sm:pr-8 overflow-visible">
+              {/* Ambient Purple/Amber Glow */}
+              <div className="absolute w-48 h-48 bg-amber-400/20 rounded-full blur-3xl pointer-events-none animate-pulse-glow" />
 
-            <p className="text-xs sm:text-sm text-purple-200/90 leading-relaxed font-normal">
-              Pusat produk fiksasi medis &amp; perban elastis berkualitas (<strong>Polifix</strong> &amp; <strong>Policrepe</strong>). Klik pin lokasi kota pada <strong>Peta Indonesia</strong> di bawah untuk langsung berbelanja di official marketplace cabang terdekat.
-            </p>
-          </div>
+              <div className="relative w-44 h-36 sm:w-56 sm:h-44">
+                <div className="relative w-full h-full animate-float hover:scale-105 transition-transform duration-300">
+                  <Image
+                    src="/images/products/polifix-chibi-thumbsup.png"
+                    alt="Maskot Polifix Chibi Resmi PC Store"
+                    fill
+                    className="object-contain drop-shadow-2xl"
+                    priority
+                  />
+                </div>
 
-          {/* Right Mascot: Cute 3D Polifix Chibi Character with Welcome Speech Bubble */}
-          <div className="relative flex items-center justify-center shrink-0 pr-4 sm:pr-8 overflow-visible">
-            {/* Ambient Purple/Amber Glow */}
-            <div className="absolute w-48 h-48 bg-amber-400/20 rounded-full blur-3xl pointer-events-none animate-pulse-glow" />
-
-            <div className="relative w-44 h-36 sm:w-56 sm:h-44">
-              <div className="relative w-full h-full animate-float hover:scale-105 transition-transform duration-300">
-                <Image
-                  src="/images/products/polifix-chibi-thumbsup.png"
-                  alt="Maskot Polifix Chibi Resmi PC Store"
-                  fill
-                  className="object-contain drop-shadow-2xl"
-                  priority
-                />
-              </div>
-
-              {/* Speech bubble "Selamat Datang!" */}
-              <div
-                className="absolute -top-3 -right-2 sm:-top-2 sm:-right-4 w-28 sm:w-32 h-11 sm:h-13 animate-bounce-subtle z-20"
-                style={{ animationDelay: "-1.5s" }}
-              >
-                <Image
-                  src="/images/badge-welcome.png"
-                  alt="Selamat Datang!"
-                  fill
-                  className="object-contain drop-shadow-xl"
-                  priority
-                />
+                {/* Speech bubble "Selamat Datang!" */}
+                <div
+                  className="absolute -top-3 -right-2 sm:-top-2 sm:-right-4 w-28 sm:w-32 h-11 sm:h-13 animate-bounce-subtle z-20"
+                  style={{ animationDelay: "-1.5s" }}
+                >
+                  <Image
+                    src="/images/badge-welcome.png"
+                    alt="Selamat Datang!"
+                    fill
+                    className="object-contain drop-shadow-xl"
+                    priority
+                  />
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
       {/* Floating Animated Chibi Background Companions in Hero Sky */}
       <div className="absolute top-32 left-4 lg:left-10 opacity-40 hover:opacity-100 transition-opacity pointer-events-none hidden sm:block animate-float" style={{ animationDuration: "5.5s" }}>
@@ -126,11 +126,10 @@ export const HeroSection: React.FC = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => setPasuruanPickerOpen(false)}
-                  className={`w-full flex items-center justify-between p-3.5 rounded-2xl text-xs font-bold text-white shadow-xs transition-transform hover:scale-[1.02] ${
-                    store.platform === "tiktok"
-                      ? "bg-black hover:bg-gray-900"
-                      : "bg-[#EE4D2D] hover:bg-[#d63f21]"
-                  }`}
+                  className={`w-full flex items-center justify-between p-3.5 rounded-2xl text-xs font-bold text-white shadow-xs transition-transform hover:scale-[1.02] ${store.platform === "tiktok"
+                    ? "bg-black hover:bg-gray-900"
+                    : "bg-[#EE4D2D] hover:bg-[#d63f21]"
+                    }`}
                 >
                   <span className="flex items-center gap-2">
                     <ShoppingBag className="w-4 h-4" />

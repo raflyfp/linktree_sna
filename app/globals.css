@@ -276,3 +276,15 @@ body {
     scroll-behavior: auto !important;
   }
 }
+
+/* Remove default browser focus box & tap highlight on SVG interactive elements */
+svg,
+svg *,
+svg g,
+svg g:focus,
+svg g:focus-visible,
+svg g:active {
+  outline: none !important;
+  -webkit-tap-highlight-color: transparent !important;
+}
+

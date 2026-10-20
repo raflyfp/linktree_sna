@@ -61,7 +61,7 @@ export const officialStores: StoreLocation[] = [
   {
     id: "pc-malang-shopee",
     name: "Toko Shopee Malang",
-    branchName: "Cabang Malang",
+    branchName: "Malang",
     city: "Malang",
     province: "Jawa Timur",
     platform: "shopee",
@@ -82,7 +82,7 @@ export const officialStores: StoreLocation[] = [
   {
     id: "pc-bandung-shopee",
     name: "Toko Shopee Bandung",
-    branchName: "Cabang Bandung",
+    branchName: "Bandung",
     city: "Bandung",
     province: "Jawa Barat",
     platform: "shopee",
@@ -103,7 +103,7 @@ export const officialStores: StoreLocation[] = [
   {
     id: "pc-jakarta-shopee",
     name: "Toko Shopee Jakarta",
-    branchName: "Cabang Jakarta",
+    branchName: "Jakarta",
     city: "Jakarta",
     province: "DKI Jakarta",
     platform: "shopee",
@@ -124,7 +124,7 @@ export const officialStores: StoreLocation[] = [
   {
     id: "pc-surabaya-shopee",
     name: "Toko Shopee Surabaya",
-    branchName: "Cabang Surabaya",
+    branchName: "Surabaya",
     city: "Surabaya",
     province: "Jawa Timur",
     platform: "shopee",
@@ -145,7 +145,7 @@ export const officialStores: StoreLocation[] = [
   {
     id: "pc-tarakan-shopee",
     name: "Toko Shopee Tarakan Kalimantan Utara",
-    branchName: "Cabang Tarakan",
+    branchName: "Tarakan",
     city: "Tarakan",
     province: "Kalimantan Utara",
     platform: "shopee",
@@ -171,7 +171,7 @@ export const officialStores: StoreLocation[] = [
 export const cityGroups: MapCityGroup[] = [
   {
     cityId: "pasuruan",
-    cityName: "Pasuruan (Pusat)",
+    cityName: "Pasuruan",
     province: "Jawa Timur",
     coordinates: { x: 44.2, y: 75.5 },
     stores: officialStores.filter((s) => s.city === "Pasuruan"),

@@ -1,91 +1,235 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
 import Image from "next/image";
 import { useSiteData } from "@/context/DataContext";
 import { MapCityGroup } from "@/types/store";
 import { Navigation, ExternalLink, ShoppingBag, X, MapPin } from "lucide-react";
 
-interface CityLayoutConfig {
-  labelOffsetX: number;
-  labelOffsetY: number;
+export interface ComputedBadgeLayout {
+  direction: "top" | "bottom" | "right" | "left" | "top-right" | "top-left" | "bottom-right" | "bottom-left";
+  dx: number;
+  dy: number;
   pillWidth: number;
   pillHeight: number;
-  hasStem?: boolean;
   stemStartX?: number;
   stemStartY?: number;
   stemEndX?: number;
   stemEndY?: number;
 }
 
-const cityLayouts: Record<string, CityLayoutConfig> = {
-  jakarta: {
-    labelOffsetX: -14,
-    labelOffsetY: -35,
-    pillWidth: 62,
-    pillHeight: 20,
-    hasStem: true,
-    stemStartX: 0,
-    stemStartY: -18,
-    stemEndX: -14,
-    stemEndY: -25,
-  },
-  bandung: {
-    labelOffsetX: 16,
-    labelOffsetY: 24,
-    pillWidth: 68,
-    pillHeight: 20,
-    hasStem: true,
-    stemStartX: 0,
-    stemStartY: 0,
-    stemEndX: 12,
-    stemEndY: 14,
-  },
-  surabaya: {
-    labelOffsetX: -12,
-    labelOffsetY: -35,
-    pillWidth: 70,
-    pillHeight: 20,
-    hasStem: true,
-    stemStartX: 0,
-    stemStartY: -18,
-    stemEndX: -10,
-    stemEndY: -25,
-  },
-  pasuruan: {
-    labelOffsetX: 56,
-    labelOffsetY: -6,
-    pillWidth: 94,
-    pillHeight: 21,
-    hasStem: true,
-    stemStartX: 0,
-    stemStartY: -8,
-    stemEndX: 16,
-    stemEndY: -6,
-  },
-  malang: {
-    labelOffsetX: 0,
-    labelOffsetY: 24,
-    pillWidth: 62,
-    pillHeight: 20,
-    hasStem: true,
-    stemStartX: 0,
-    stemStartY: 0,
-    stemEndX: 0,
-    stemEndY: 14,
-  },
-  tarakan: {
-    labelOffsetX: 0,
-    labelOffsetY: -35,
-    pillWidth: 64,
-    pillHeight: 20,
-    hasStem: true,
-    stemStartX: 0,
-    stemStartY: -18,
-    stemEndX: 0,
-    stemEndY: -25,
-  },
-};
+/**
+ * Algoritma cerdas penghindaran tabrakan posisi badge pada peta (Anti-Collision Layout).
+ * Menghitung arah optimal badge (atas, kanan, bawah, kiri) agar tidak saling menumpuk
+ * dan tidak menutupi pin kota lain yang berdekatan (seperti Surabaya, Pasuruan, dan Malang).
+ */
+function computeCityLayouts(groups: MapCityGroup[]): Record<string, ComputedBadgeLayout> {
+  const result: Record<string, ComputedBadgeLayout> = {};
+  const placedBadges: Array<{ left: number; right: number; top: number; bottom: number }> = [];
+
+  const pins = groups.map((g) => ({
+    id: g.cityId,
+    x: (g.coordinates.x / 100) * 1000,
+    y: (g.coordinates.y / 100) * 400,
+  }));
+
+  groups.forEach((group) => {
+    const px = (group.coordinates.x / 100) * 1000;
+    const py = (group.coordinates.y / 100) * 400;
+    const pillWidth = Math.max(52, group.cityName.length * 7 + 16);
+    const pillHeight = 18;
+    const halfW = pillWidth / 2;
+    const halfH = pillHeight / 2;
+
+    const candidates: Array<{
+      direction: ComputedBadgeLayout["direction"];
+      dx: number;
+      dy: number;
+      box: { left: number; right: number; top: number; bottom: number };
+      stemStartX?: number;
+      stemStartY?: number;
+      stemEndX?: number;
+      stemEndY?: number;
+    }> = [
+      // 1. TOP (standar langsung tepat di atas kepala pin)
+      {
+        direction: "top",
+        dx: 0,
+        dy: -42,
+        box: { left: px - halfW, right: px + halfW, top: py - 42 - halfH, bottom: py - 42 + halfH },
+      },
+      // 2. RIGHT (ke arah kanan dengan garis penunjuk horizontal, cocok untuk Pasuruan)
+      {
+        direction: "right",
+        dx: halfW + 16,
+        dy: -14,
+        box: { left: px + 16, right: px + 16 + pillWidth, top: py - 14 - halfH, bottom: py - 14 + halfH },
+        stemStartX: 6,
+        stemStartY: -14,
+        stemEndX: 16,
+        stemEndY: -14,
+      },
+      // 3. BOTTOM (ke arah bawah pin, cocok untuk kota di pesisir selatan seperti Malang & Bandung)
+      {
+        direction: "bottom",
+        dx: 0,
+        dy: 22,
+        box: { left: px - halfW, right: px + halfW, top: py + 22 - halfH, bottom: py + 22 + halfH },
+        stemStartX: 0,
+        stemStartY: 2,
+        stemEndX: 0,
+        stemEndY: 13,
+      },
+      // 4. LEFT (ke arah kiri)
+      {
+        direction: "left",
+        dx: -halfW - 16,
+        dy: -14,
+        box: { left: px - 16 - pillWidth, right: px - 16, top: py - 14 - halfH, bottom: py - 14 + halfH },
+        stemStartX: -6,
+        stemStartY: -14,
+        stemEndX: -16,
+        stemEndY: -14,
+      },
+      // 5. BOTTOM-RIGHT
+      {
+        direction: "bottom-right",
+        dx: halfW + 10,
+        dy: 18,
+        box: { left: px + 10, right: px + 10 + pillWidth, top: py + 18 - halfH, bottom: py + 18 + halfH },
+        stemStartX: 4,
+        stemStartY: 2,
+        stemEndX: 10,
+        stemEndY: 12,
+      },
+      // 6. BOTTOM-LEFT
+      {
+        direction: "bottom-left",
+        dx: -halfW - 10,
+        dy: 18,
+        box: { left: px - 10 - pillWidth, right: px - 10, top: py + 18 - halfH, bottom: py + 18 + halfH },
+        stemStartX: -4,
+        stemStartY: 2,
+        stemEndX: -10,
+        stemEndY: 12,
+      },
+      // 7. TOP-RIGHT
+      {
+        direction: "top-right",
+        dx: halfW + 10,
+        dy: -36,
+        box: { left: px + 10, right: px + 10 + pillWidth, top: py - 36 - halfH, bottom: py - 36 + halfH },
+        stemStartX: 4,
+        stemStartY: -20,
+        stemEndX: 10,
+        stemEndY: -30,
+      },
+      // 8. TOP-LEFT
+      {
+        direction: "top-left",
+        dx: -halfW - 10,
+        dy: -36,
+        box: { left: px - 10 - pillWidth, right: px - 10, top: py - 36 - halfH, bottom: py - 36 + halfH },
+        stemStartX: -4,
+        stemStartY: -20,
+        stemEndX: -10,
+        stemEndY: -30,
+      },
+    ];
+
+    let bestCandidate = candidates[0];
+    let minScore = Infinity;
+
+    for (const cand of candidates) {
+      let score = 0;
+
+      // Cek batas kanvas peta
+      if (cand.box.left < 5 || cand.box.right > 995 || cand.box.top < 5 || cand.box.bottom > 395) {
+        score += 100;
+      }
+
+      // Cek konflik arah dengan pin kota tetangga yang berdekatan
+      for (const other of pins) {
+        if (other.id === group.cityId) continue;
+        const diffX = other.x - px;
+        const diffY = other.y - py;
+
+        // Jika ada kota lain tepat di atas atau di bawahnya (< 35px horizontal)
+        if (Math.abs(diffX) < 35) {
+          // Ada kota tepat di utara/atas -> jangan taruh badge di atas
+          if (diffY < 0 && diffY > -45 && cand.direction.includes("top")) {
+            score += 50;
+          }
+          // Ada kota tepat di selatan/bawah -> jangan taruh badge di bawah
+          if (diffY > 0 && diffY < 45 && cand.direction.includes("bottom")) {
+            score += 50;
+          }
+        }
+
+        // Jika ada kota lain di sampingnya (< 30px vertikal)
+        if (Math.abs(diffY) < 30) {
+          if (diffX > 0 && diffX < 60 && cand.direction.includes("right")) {
+            score += 50;
+          }
+          if (diffX < 0 && diffX > -60 && cand.direction.includes("left")) {
+            score += 50;
+          }
+        }
+
+        // Jangan sampai badge menutupi kepala pin kota lain
+        const pinHeadLeft = other.x - 16;
+        const pinHeadRight = other.x + 16;
+        const pinHeadTop = other.y - 38;
+        const pinHeadBottom = other.y + 2;
+
+        if (
+          cand.box.left < pinHeadRight &&
+          cand.box.right > pinHeadLeft &&
+          cand.box.top < pinHeadBottom &&
+          cand.box.bottom > pinHeadTop
+        ) {
+          score += 60;
+        }
+      }
+
+      // Cek overlap dengan badge kota yang sudah ditempatkan sebelumnya
+      for (const placed of placedBadges) {
+        const pad = 6;
+        if (
+          cand.box.left < placed.right + pad &&
+          cand.box.right > placed.left - pad &&
+          cand.box.top < placed.bottom + pad &&
+          cand.box.bottom > placed.top - pad
+        ) {
+          score += 70;
+        }
+      }
+
+      if (score === 0) {
+        bestCandidate = cand;
+        break;
+      } else if (score < minScore) {
+        minScore = score;
+        bestCandidate = cand;
+      }
+    }
+
+    placedBadges.push(bestCandidate.box);
+    result[group.cityId] = {
+      direction: bestCandidate.direction,
+      dx: bestCandidate.dx,
+      dy: bestCandidate.dy,
+      pillWidth,
+      pillHeight,
+      stemStartX: bestCandidate.stemStartX,
+      stemStartY: bestCandidate.stemStartY,
+      stemEndX: bestCandidate.stemEndX,
+      stemEndY: bestCandidate.stemEndY,
+    };
+  });
+
+  return result;
+}
 
 interface IndonesiaSvgMapProps {
   activeCityId?: string | null;
@@ -96,7 +240,24 @@ export const IndonesiaSvgMap: React.FC<IndonesiaSvgMapProps> = () => {
   const { cityGroups } = useSiteData();
   const [hoveredCity, setHoveredCity] = useState<MapCityGroup | null>(null);
   const [activeMultiCity, setActiveMultiCity] = useState<MapCityGroup | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+  const [hasSwiped, setHasSwiped] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  // Dynamic collision-free badge layout calculation
+  const dynamicLayouts = useMemo(() => computeCityLayouts(cityGroups), [cityGroups]);
+
+  // Deteksi perangkat mobile/sentuh secara akurat agar petunjuk geser hanya muncul di HP
+  useEffect(() => {
+    const checkMobile = () => {
+      const isTouch = window.matchMedia("(pointer: coarse)").matches;
+      const isSmall = window.innerWidth < 640;
+      setIsMobile(isSmall || (isTouch && window.innerWidth < 768));
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   // Auto-scroll on mobile to center Java & Kalimantan pins on initial load
   useEffect(() => {
@@ -127,33 +288,58 @@ export const IndonesiaSvgMap: React.FC<IndonesiaSvgMapProps> = () => {
 
   return (
     <div className="relative w-full select-none">
-      {/* Mobile-Friendly Quick Branch Chips (No borders, 100% seamless) */}
+      {/* Mobile-Friendly Quick City Chips (Clean city names, dynamic Pusat badge) */}
       <div className="md:hidden px-4 py-2 bg-transparent flex items-center gap-2 overflow-x-auto scrollbar-none">
         <span className="text-[11px] font-black uppercase text-amber-300 shrink-0 flex items-center gap-1">
           <MapPin className="w-3.5 h-3.5 text-amber-400" />
-          Pilih Cabang:
+          Pilih Kota:
         </span>
-        {cityGroups.map((city) => (
-          <button
-            key={city.cityId}
-            onClick={() => handleCityClick(city)}
-            className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-bold transition-transform active:scale-95 flex items-center gap-1 ${
-              city.cityId === "pasuruan"
-                ? "bg-gradient-to-r from-amber-400 to-amber-500 text-purple-950 shadow-sm shadow-amber-500/20"
-                : "bg-white/15 text-white hover:bg-white/25 border border-white/15"
-            }`}
-          >
-            <span>{city.cityId === "pasuruan" ? "⭐ Pusat Pasuruan" : city.cityName}</span>
-          </button>
-        ))}
+        {cityGroups.map((city) => {
+          const isPusat = city.stores.some((s) => s.isPusat);
+          return (
+            <button
+              key={city.cityId}
+              onClick={() => handleCityClick(city)}
+              className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-bold transition-transform active:scale-95 flex items-center gap-1 ${
+                isPusat
+                  ? "bg-gradient-to-r from-amber-400 to-amber-500 text-purple-950 shadow-sm shadow-amber-500/20"
+                  : "bg-white/15 text-white hover:bg-white/25 border border-white/15"
+              }`}
+            >
+              <span>{isPusat ? `⭐ ${city.cityName}` : city.cityName}</span>
+            </button>
+          );
+        })}
       </div>
 
-      {/* Swipeable Map Container for Mobile & Full Scaled Map on Desktop */}
-      <div
-        ref={scrollContainerRef}
-        className="w-full overflow-x-auto scrollbar-none touch-pan-x"
-      >
-        <div className="relative min-w-[760px] md:min-w-full aspect-[2.5/1] w-full">
+      {/* Map Display Area with Screen-Fixed Overlay Hints */}
+      <div className="relative w-full overflow-hidden">
+        {/* Floating Guide Hints (Stays fixed to screen, NEVER cut off by horizontal scrolling) */}
+        <div className="pointer-events-none absolute top-3 inset-x-3 sm:top-5 sm:inset-x-6 z-20 flex items-center justify-between gap-2">
+          {/* Main instruction badge */}
+          <div className="flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-1.5 rounded-full bg-white/95 backdrop-blur-md shadow-md text-[11px] sm:text-xs font-bold text-[#4C1D95] border border-purple-200 pointer-events-auto shrink-0 max-w-[80%] sm:max-w-none">
+            <Navigation className="w-3.5 h-3.5 text-[#8B5CF6] animate-pulse shrink-0" />
+            <span className="truncate sm:whitespace-normal">
+              <span className="hidden sm:inline">Klik pin di peta untuk membuka marketplace resmi</span>
+              <span className="sm:hidden">Klik pin untuk belanja</span>
+            </span>
+          </div>
+
+          {/* Swipe Hint strictly only for Mobile touch devices and before user scrolls */}
+          {isMobile && !hasSwiped && (
+            <div className="sm:hidden flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-purple-900/90 backdrop-blur-md text-[10px] font-bold text-amber-300 border border-purple-600/50 shadow-md animate-pulse shrink-0 pointer-events-auto">
+              <span>👉 Geser Peta</span>
+            </div>
+          )}
+        </div>
+
+        {/* Swipeable Map Container for Mobile & Full Scaled Map on Desktop */}
+        <div
+          ref={scrollContainerRef}
+          onScroll={() => setHasSwiped(true)}
+          className="w-full overflow-x-auto scrollbar-none touch-pan-x"
+        >
+          <div className="relative min-w-[760px] md:min-w-full aspect-[2.5/1] w-full">
           {/* 1. Underlying Crisp Cartoon Map of Indonesia (100% Clean, No Dark Overlay) */}
           <Image
             src="/images/indonesia-cartoon-map.png"
@@ -167,7 +353,8 @@ export const IndonesiaSvgMap: React.FC<IndonesiaSvgMapProps> = () => {
           {/* 2. Scalable SVG Overlay (viewBox 0 0 1000 400 exactly matches 2.5:1 image aspect) */}
           <svg
             viewBox="0 0 1000 400"
-            className="absolute inset-0 w-full h-full pointer-events-auto"
+            className="absolute inset-0 w-full h-full pointer-events-auto outline-none focus:outline-none select-none"
+            style={{ outline: "none", WebkitTapHighlightColor: "transparent" }}
             preserveAspectRatio="none"
             role="region"
             aria-label="Peta Interaktif Cabang PC Store Indonesia"
@@ -193,18 +380,21 @@ export const IndonesiaSvgMap: React.FC<IndonesiaSvgMapProps> = () => {
             />
           </g>
 
-          {/* Interactive City Pins with Anti-Collision Staggering */}
+          {/* Interactive City Pins with Dynamic Anti-Collision Placement */}
           {cityGroups.map((group) => {
             const posX = (group.coordinates.x / 100) * 1000;
             const posY = (group.coordinates.y / 100) * 400;
             const isHovered = hoveredCity?.cityId === group.cityId;
             const isSelected = activeMultiCity?.cityId === group.cityId;
             const isPusat = group.stores.some((s) => s.isPusat);
-            const layout = cityLayouts[group.cityId] || {
-              labelOffsetX: 0,
-              labelOffsetY: -35,
-              pillWidth: 70,
-              pillHeight: 20,
+
+            // Fetch dynamic layout config computed by collision detector
+            const layout = dynamicLayouts[group.cityId] || {
+              direction: "top" as const,
+              dx: 0,
+              dy: -42,
+              pillWidth: Math.max(52, group.cityName.length * 7 + 16),
+              pillHeight: 18,
             };
 
             const pillHalfW = layout.pillWidth / 2;
@@ -214,13 +404,14 @@ export const IndonesiaSvgMap: React.FC<IndonesiaSvgMapProps> = () => {
               <g
                 key={group.cityId}
                 transform={`translate(${posX}, ${posY})`}
-                className="cursor-pointer transition-transform duration-200"
+                className="cursor-pointer transition-transform duration-200 outline-none focus:outline-none focus-visible:outline-none select-none"
+                style={{ outline: "none", WebkitTapHighlightColor: "transparent" }}
                 onClick={() => handleCityClick(group)}
                 onMouseEnter={() => setHoveredCity(group)}
                 onMouseLeave={() => setHoveredCity(null)}
                 role="button"
                 tabIndex={0}
-                aria-label={`Buka marketplace cabang ${group.cityName}`}
+                aria-label={`Buka marketplace ${group.cityName}`}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" || e.key === " ") {
                     e.preventDefault();
@@ -228,17 +419,17 @@ export const IndonesiaSvgMap: React.FC<IndonesiaSvgMapProps> = () => {
                   }
                 }}
               >
-                {/* Connecting Leader Line (Stem) to prevent clutter */}
-                {layout.hasStem && (
+                {/* Connecting Leader Line (Stem) when offset to prevent collision */}
+                {layout.stemStartX !== undefined && layout.stemEndX !== undefined && (
                   <line
-                    x1={layout.stemStartX || 0}
-                    y1={layout.stemStartY || 0}
-                    x2={layout.stemEndX || layout.labelOffsetX}
-                    y2={layout.stemEndY || layout.labelOffsetY}
-                    stroke={isPusat ? "#F59E0B" : "#DDD6FE"}
+                    x1={layout.stemStartX}
+                    y1={layout.stemStartY ?? 0}
+                    x2={layout.stemEndX}
+                    y2={layout.stemEndY ?? 0}
+                    stroke={isPusat ? "#F59E0B" : "#C4B5FD"}
                     strokeWidth="1.5"
                     strokeDasharray="2 2"
-                    opacity={isHovered || isSelected ? 1 : 0.75}
+                    opacity={isHovered || isSelected ? 1 : 0.85}
                   />
                 )}
 
@@ -281,19 +472,37 @@ export const IndonesiaSvgMap: React.FC<IndonesiaSvgMapProps> = () => {
                   {isPusat && <circle cx="0" cy="-7" r="2.2" fill="#F59E0B" />}
                 </g>
 
-                {/* Anti-Collision Staggered Label Pill */}
+                {/* Anti-Collision Label Pill with Indicator Pointer */}
                 <g
-                  transform={`translate(${layout.labelOffsetX}, ${layout.labelOffsetY}) scale(${
-                    isHovered || isSelected ? 1.08 : 1
-                  })`}
+                  transform={`translate(${layout.dx}, ${layout.dy}) scale(${isHovered || isSelected ? 1.08 : 1})`}
                   style={{ transition: "transform 0.2s ease-out" }}
                 >
+                  {/* Speech bubble down arrow when placed on top */}
+                  {layout.direction === "top" && (
+                    <polygon
+                      points="-3.5,8 3.5,8 0,12"
+                      fill={isPusat ? "#451A03" : "#2E1065"}
+                      stroke={isPusat ? "#F59E0B" : "#C4B5FD"}
+                      strokeWidth="1"
+                    />
+                  )}
+
+                  {/* Speech bubble up arrow when placed at bottom */}
+                  {layout.direction === "bottom" && (
+                    <polygon
+                      points="-3.5,-8 3.5,-8 0,-12"
+                      fill={isPusat ? "#451A03" : "#2E1065"}
+                      stroke={isPusat ? "#F59E0B" : "#C4B5FD"}
+                      strokeWidth="1"
+                    />
+                  )}
+
                   <rect
                     x={-pillHalfW}
                     y={-pillHalfH}
                     width={layout.pillWidth}
                     height={layout.pillHeight}
-                    rx={layout.pillHeight / 2}
+                    rx={pillHalfH}
                     fill={isPusat ? "#451A03" : "#2E1065"}
                     stroke={isPusat ? "#F59E0B" : "#C4B5FD"}
                     strokeWidth="1.5"
@@ -301,7 +510,7 @@ export const IndonesiaSvgMap: React.FC<IndonesiaSvgMapProps> = () => {
                   />
                   <text
                     x="0"
-                    y="3.5"
+                    y="3"
                     fill="white"
                     fontSize="9"
                     fontWeight="bold"
@@ -316,19 +525,9 @@ export const IndonesiaSvgMap: React.FC<IndonesiaSvgMapProps> = () => {
             );
           })}
         </svg>
-
-        {/* 3. Guide Hints */}
-        <div className="absolute top-3 left-3 sm:top-6 sm:left-6 z-10 flex items-center gap-2 px-3 py-1.5 sm:px-3.5 sm:py-1.5 rounded-full bg-white/95 backdrop-blur-md shadow-md text-[11px] sm:text-xs font-bold text-[#4C1D95] border border-purple-200">
-          <Navigation className="w-3.5 h-3.5 text-[#8B5CF6] animate-pulse shrink-0" />
-          <span>Klik pin di peta untuk membuka marketplace resmi</span>
-        </div>
-
-        {/* Swipe Hint on Mobile */}
-        <div className="md:hidden absolute top-3 right-3 z-10 flex items-center gap-1 px-2.5 py-1 rounded-full bg-purple-900/90 backdrop-blur-md text-[10px] font-bold text-amber-300 border border-purple-600/50 shadow-md">
-          <span>👉 Geser Peta</span>
-        </div>
       </div>
       </div>
+    </div>
 
       {/* 4. Responsive Modal Launcher for Multi-Store Cities (Pasuruan) */}
       {activeMultiCity && (

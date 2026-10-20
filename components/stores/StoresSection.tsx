@@ -77,10 +77,10 @@ export const StoresSection: React.FC = () => {
         {/* Header with Mascot Megaphone Announcement */}
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-12 sm:mb-14">
           <div className="space-y-3.5 max-w-2xl text-center lg:text-left">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-purple-200 text-xs font-black uppercase tracking-wider text-[#6D28D9] shadow-xs">
+            {/* <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-purple-200 text-xs font-black uppercase tracking-wider text-[#6D28D9] shadow-xs">
               <Store className="w-3.5 h-3.5" />
               <span>Official E-Commerce Hub • Jaringan Tersebar</span>
-            </div>
+            </div> */}
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#4C1D95] tracking-tight leading-[1.15]">
               Daftar Marketplace Resmi Cabang
             </h2>
@@ -115,78 +115,26 @@ export const StoresSection: React.FC = () => {
           </div>
         </div>
 
-        {/* Filter & Search Bar with Lively Pills */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4 mb-10 bg-white p-3.5 sm:p-4 rounded-3xl border border-purple-100 shadow-md">
-          {/* Platform Filter Buttons */}
-          <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
-            <button
-              onClick={() => setSelectedFilter("all")}
-              className={`px-4 py-2.5 rounded-2xl text-xs font-black transition-all shrink-0 cursor-pointer flex items-center gap-1.5 ${
-                selectedFilter === "all"
-                  ? "bg-[#6D28D9] text-white shadow-md shadow-purple-500/25 scale-105"
-                  : "bg-purple-50 text-gray-700 hover:bg-purple-100"
-              }`}
-            >
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Semua Cabang ({stores.length})</span>
-            </button>
-            <button
-              onClick={() => setSelectedFilter("shopee")}
-              className={`px-4 py-2.5 rounded-2xl text-xs font-black transition-all shrink-0 cursor-pointer flex items-center gap-1.5 ${
-                selectedFilter === "shopee"
-                  ? "bg-[#EE4D2D] text-white shadow-md shadow-orange-500/25 scale-105"
-                  : "bg-orange-50 text-[#EE4D2D] hover:bg-orange-100"
-              }`}
-            >
-              <ShoppingBag className="w-3.5 h-3.5" />
-              <span>Shopee Official ({stores.filter((s) => s.platform === "shopee").length})</span>
-            </button>
-            <button
-              onClick={() => setSelectedFilter("tiktok")}
-              className={`px-4 py-2.5 rounded-2xl text-xs font-black transition-all shrink-0 cursor-pointer flex items-center gap-1.5 ${
-                selectedFilter === "tiktok"
-                  ? "bg-black text-white shadow-md shadow-gray-900/25 scale-105"
-                  : "bg-gray-100 text-gray-800 hover:bg-gray-200"
-              }`}
-            >
-              <Zap className="w-3.5 h-3.5 text-pink-400" />
-              <span>TikTok Shop ({stores.filter((s) => s.platform === "tiktok").length})</span>
-            </button>
-          </div>
 
-          {/* Search Input */}
-          <div className="relative w-full sm:w-72 mt-2 sm:mt-0">
-            <Search className="w-4 h-4 text-purple-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-            <input
-              type="text"
-              placeholder="Cari kota atau cabang resmi..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 text-xs bg-purple-50/50 rounded-2xl border border-purple-100 focus:outline-hidden focus:ring-2 focus:ring-[#8B5CF6] focus:bg-white transition-all text-gray-900 placeholder:text-gray-400 font-medium"
-            />
-          </div>
-        </div>
 
         {/* Store Cards Grid with 3D Chibi Mascots & Rich Animations */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredStores.map((store) => (
             <div
               key={store.id}
-              className={`rounded-3xl p-6 bg-white border transition-all duration-300 flex flex-col justify-between hover:-translate-y-2.5 hover:shadow-2xl hover:shadow-purple-500/15 group relative overflow-hidden ${
-                store.isPusat
-                  ? "border-amber-300 ring-2 ring-amber-200/70 shadow-lg shadow-amber-500/10 hover:border-amber-400"
-                  : "border-purple-100 shadow-sm hover:border-purple-300"
-              }`}
+              className={`rounded-3xl p-6 bg-white border transition-all duration-300 flex flex-col justify-between hover:-translate-y-2.5 hover:shadow-2xl hover:shadow-purple-500/15 group relative overflow-hidden ${store.isPusat
+                ? "border-amber-300 ring-2 ring-amber-200/70 shadow-lg shadow-amber-500/10 hover:border-amber-400"
+                : "border-purple-100 shadow-sm hover:border-purple-300"
+                }`}
             >
               {/* Background Ambient Glow */}
               <div
-                className={`absolute -top-16 -right-16 w-36 h-36 rounded-full blur-3xl pointer-events-none transition-all duration-500 ${
-                  store.platform === "tiktok"
-                    ? "bg-pink-100 group-hover:scale-150"
-                    : store.isPusat
+                className={`absolute -top-16 -right-16 w-36 h-36 rounded-full blur-3xl pointer-events-none transition-all duration-500 ${store.platform === "tiktok"
+                  ? "bg-pink-100 group-hover:scale-150"
+                  : store.isPusat
                     ? "bg-amber-100 group-hover:scale-150"
                     : "bg-orange-100 group-hover:scale-150"
-                }`}
+                  }`}
               />
 
               <div>
@@ -194,21 +142,20 @@ export const StoresSection: React.FC = () => {
                 <div className="flex items-center justify-between gap-2 mb-4 relative z-10">
                   <div className="flex items-center gap-2">
                     <span
-                      className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black shadow-xs ${
-                        store.platform === "tiktok"
-                          ? "bg-black text-white"
-                          : "bg-[#EE4D2D] text-white"
-                      }`}
+                      className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black shadow-xs ${store.platform === "tiktok"
+                        ? "bg-black text-white"
+                        : "bg-[#EE4D2D] text-white"
+                        }`}
                     >
                       <ShoppingBag className="w-3.5 h-3.5" />
                       <span>{store.platformLabel}</span>
                     </span>
 
                     {/* Live Online Radar Indicator */}
-                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-50 text-emerald-700 border border-emerald-200">
+                    {/* <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-50 text-emerald-700 border border-emerald-200">
                       <span className="w-2 h-2 rounded-full bg-emerald-500 animate-radar" />
                       Buka
-                    </span>
+                    </span> */}
                   </div>
 
                   {store.isPusat ? (
@@ -261,12 +208,12 @@ export const StoresSection: React.FC = () => {
 
                 {/* Delivery Badge & Promo Note */}
                 <div className="space-y-2 mt-3 relative z-10">
-                  {store.deliverySpeed && (
+                  {/* {store.deliverySpeed && (
                     <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-purple-50 text-[11px] font-black text-[#6D28D9] border border-purple-100">
                       <Truck className="w-3.5 h-3.5 text-[#8B5CF6]" />
                       <span>{store.deliverySpeed}</span>
                     </div>
-                  )}
+                  )} */}
 
                   <p className="text-xs text-gray-600 leading-relaxed">
                     {store.description}
@@ -280,11 +227,10 @@ export const StoresSection: React.FC = () => {
                   href={store.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`w-full inline-flex items-center justify-center gap-2.5 py-3.5 px-5 rounded-2xl text-xs font-black text-white shadow-md transition-all hover:scale-[1.02] shimmer-effect cursor-pointer ${
-                    store.platform === "tiktok"
-                      ? "bg-gradient-to-r from-gray-900 via-black to-gray-800 hover:from-black hover:to-gray-900 shadow-gray-900/25"
-                      : "bg-gradient-to-r from-[#EE4D2D] to-[#FF6B4A] hover:from-[#d63f21] hover:to-[#EE4D2D] shadow-orange-500/25"
-                  }`}
+                  className={`w-full inline-flex items-center justify-center gap-2.5 py-3.5 px-5 rounded-2xl text-xs font-black text-white shadow-md transition-all hover:scale-[1.02] shimmer-effect cursor-pointer ${store.platform === "tiktok"
+                    ? "bg-gradient-to-r from-gray-900 via-black to-gray-800 hover:from-black hover:to-gray-900 shadow-gray-900/25"
+                    : "bg-gradient-to-r from-[#EE4D2D] to-[#FF6B4A] hover:from-[#d63f21] hover:to-[#EE4D2D] shadow-orange-500/25"
+                    }`}
                 >
                   <ShoppingBag className="w-4 h-4 transition-transform group-hover:rotate-12" />
                   <span>Kunjungi Marketplace Resmi</span>

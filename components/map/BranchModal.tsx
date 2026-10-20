@@ -108,7 +108,7 @@ export const BranchModal: React.FC<BranchModalProps> = ({ cityGroup, onClose }) 
               <div className="mt-3.5 pt-3 border-t border-purple-100/60 flex items-center justify-between gap-2">
                 <span className="text-xs text-purple-700 font-bold flex items-center gap-1">
                   <Store className="w-3.5 h-3.5" />
-                  {store.badge || "Cabang Resmi"}
+                  {store.badge || store.city || "Official Store"}
                 </span>
 
                 <a

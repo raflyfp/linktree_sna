@@ -348,7 +348,7 @@ export function groupStoresIntoCities(stores: StoreLocation[]): MapCityGroup[] {
     const key = store.city.toLowerCase().trim();
     if (!map[key]) {
       map[key] = {
-        cityName: store.isPusat ? `${store.city} (Pusat)` : `Cabang ${store.city}`,
+        cityName: store.city.trim(),
         province: store.province,
         coordinates: store.mapCoordinates || { x: 50, y: 50 },
         stores: [],

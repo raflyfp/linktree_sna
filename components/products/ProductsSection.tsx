@@ -76,28 +76,14 @@ export const ProductsSection: React.FC = () => {
         {/* Section Header with Best Seller Crown Badge & Chibi Mascot Callout */}
         <div className="flex flex-col lg:flex-row items-center justify-between gap-8 mb-14 sm:mb-18">
           <div className="flex flex-col items-center lg:items-start text-center lg:text-left space-y-3.5 max-w-2xl">
-            <div className="flex items-center gap-3">
-              <div className="relative w-36 h-12 animate-bounce-subtle">
-                <Image
-                  src="/images/badge-bestseller.png"
-                  alt="Koleksi Unggulan PC Store"
-                  fill
-                  className="object-contain"
-                  priority
-                />
-              </div>
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-100/80 border border-purple-200 text-xs font-black text-[#6D28D9] animate-pulse">
-                <Sparkles className="w-3.5 h-3.5 text-amber-500 animate-spin" style={{ animationDuration: "5s" }} />
-                Produk Medis Asli &amp; Resmi
-              </span>
-            </div>
+
 
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#4C1D95] tracking-tight leading-[1.15]">
-              Produk Pilihan &amp; Unggulan Medis
+              Produk Pilihan &amp; Unggulan
             </h2>
 
             <p className="text-sm sm:text-base text-gray-600 font-medium leading-relaxed">
-              Koleksi produk fiksasi penutup luka dan perban medis terpercaya dari PC Store. Menghadirkan foto kemasan resmi dengan kualitas standar medis yang siap kirim ke seluruh Indonesia.
+              Koleksi produk penutup luka dan perban medis terpercaya dari PriorityCare Store. Menghadirkan foto kemasan resmi dengan kualitas standar medis yang siap kirim ke seluruh Indonesia.
             </p>
           </div>
 
@@ -137,21 +123,19 @@ export const ProductsSection: React.FC = () => {
                 key={product.id}
                 onMouseEnter={() => setHoveredCardId(product.id)}
                 onMouseLeave={() => setHoveredCardId(null)}
-                className={`rounded-3xl border bg-white flex flex-col justify-between overflow-hidden transition-all duration-300 hover:-translate-y-3 hover:shadow-2xl hover:shadow-purple-500/20 group relative ${
-                  product.isBestSeller
-                    ? "border-purple-200 shadow-lg shadow-purple-500/10 ring-2 ring-purple-100 hover:border-purple-400"
-                    : "border-gray-200/90 shadow-sm hover:border-purple-300"
-                }`}
+                className={`rounded-3xl border bg-white flex flex-col justify-between overflow-hidden transition-all duration-300 hover:-translate-y-3 hover:shadow-2xl hover:shadow-purple-500/20 group relative ${product.isBestSeller
+                  ? "border-purple-200 shadow-lg shadow-purple-500/10 ring-2 ring-purple-100 hover:border-purple-400"
+                  : "border-gray-200/90 shadow-sm hover:border-purple-300"
+                  }`}
               >
                 {/* Top Glowing Gradient Bar */}
                 <div
-                  className={`h-1.5 w-full bg-gradient-to-r ${
-                    idx % 3 === 0
-                      ? "from-orange-400 via-amber-400 to-purple-600"
-                      : idx % 3 === 1
+                  className={`h-1.5 w-full bg-gradient-to-r ${idx % 3 === 0
+                    ? "from-orange-400 via-amber-400 to-purple-600"
+                    : idx % 3 === 1
                       ? "from-purple-600 via-violet-500 to-emerald-400"
                       : "from-blue-500 via-purple-500 to-pink-500"
-                  }`}
+                    }`}
                 />
 
                 <div>
@@ -159,11 +143,10 @@ export const ProductsSection: React.FC = () => {
                   <div className="relative aspect-4/3 w-full bg-gradient-to-b from-[#F5F3FF] via-[#EDE9FE]/40 to-white flex items-center justify-center p-6 overflow-hidden border-b border-purple-50 select-none">
                     {/* Radial Glow Ring behind product */}
                     <div
-                      className={`absolute w-44 h-44 rounded-full blur-2xl transition-all duration-700 pointer-events-none ${
-                        isHovered
-                          ? "bg-purple-300/50 scale-125"
-                          : "bg-purple-200/35 scale-100"
-                      }`}
+                      className={`absolute w-44 h-44 rounded-full blur-2xl transition-all duration-700 pointer-events-none ${isHovered
+                        ? "bg-purple-300/50 scale-125"
+                        : "bg-purple-200/35 scale-100"
+                        }`}
                     />
 
                     {/* Main Real Product Image */}
@@ -195,11 +178,10 @@ export const ProductsSection: React.FC = () => {
                     <div className="absolute top-3.5 left-3.5 flex flex-col gap-1.5 z-20">
                       {product.badge && (
                         <span
-                          className={`text-[11px] font-black px-3 py-1 rounded-full shadow-md flex items-center gap-1.5 backdrop-blur-xs ${
-                            product.isBestSeller
-                              ? "bg-gradient-to-r from-[#6D28D9] to-[#8B5CF6] text-white ring-1 ring-white/30"
-                              : "bg-white/90 text-purple-900 border border-purple-200"
-                          }`}
+                          className={`text-[11px] font-black px-3 py-1 rounded-full shadow-md flex items-center gap-1.5 backdrop-blur-xs ${product.isBestSeller
+                            ? "bg-gradient-to-r from-[#6D28D9] to-[#8B5CF6] text-white ring-1 ring-white/30"
+                            : "bg-white/90 text-purple-900 border border-purple-200"
+                            }`}
                         >
                           <Sparkles className="w-3 h-3 text-amber-300 animate-spin" style={{ animationDuration: "6s" }} />
                           {product.badge}
@@ -222,11 +204,10 @@ export const ProductsSection: React.FC = () => {
                     {/* Mascot Speech Bubble Callout on Hover */}
                     {product.chibiQuote && (
                       <div
-                        className={`absolute bottom-2 inset-x-3 bg-white/95 backdrop-blur-md border border-purple-200/90 rounded-2xl p-2.5 shadow-lg text-center transition-all duration-300 z-30 ${
-                          isHovered
-                            ? "opacity-100 translate-y-0"
-                            : "opacity-0 translate-y-2 pointer-events-none"
-                        }`}
+                        className={`absolute bottom-2 inset-x-3 bg-white/95 backdrop-blur-md border border-purple-200/90 rounded-2xl p-2.5 shadow-lg text-center transition-all duration-300 z-30 ${isHovered
+                          ? "opacity-100 translate-y-0"
+                          : "opacity-0 translate-y-2 pointer-events-none"
+                          }`}
                       >
                         <p className="text-[11px] font-bold text-[#4C1D95] leading-snug">
                           &ldquo;{product.chibiQuote}&rdquo;
@@ -277,11 +258,10 @@ export const ProductsSection: React.FC = () => {
                     href={pusatStore.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={`w-full inline-flex items-center justify-center gap-2.5 py-3.5 px-5 rounded-2xl text-xs font-black transition-all shimmer-effect cursor-pointer ${
-                      product.isBestSeller
-                        ? "bg-gradient-to-r from-[#6D28D9] to-[#8B5CF6] text-white hover:from-[#5B21B6] hover:to-[#7C3AED] shadow-md shadow-purple-500/25 hover:shadow-xl hover:scale-[1.02]"
-                        : "bg-purple-50 text-[#6D28D9] hover:bg-[#6D28D9] hover:text-white border border-purple-200 hover:border-transparent hover:scale-[1.02]"
-                    }`}
+                    className={`w-full inline-flex items-center justify-center gap-2.5 py-3.5 px-5 rounded-2xl text-xs font-black transition-all shimmer-effect cursor-pointer ${product.isBestSeller
+                      ? "bg-gradient-to-r from-[#6D28D9] to-[#8B5CF6] text-white hover:from-[#5B21B6] hover:to-[#7C3AED] shadow-md shadow-purple-500/25 hover:shadow-xl hover:scale-[1.02]"
+                      : "bg-purple-50 text-[#6D28D9] hover:bg-[#6D28D9] hover:text-white border border-purple-200 hover:border-transparent hover:scale-[1.02]"
+                      }`}
                   >
                     <ShoppingBag className="w-4 h-4 shrink-0 transition-transform group-hover:rotate-12" />
                     <span>Beli di Official Marketplace</span>

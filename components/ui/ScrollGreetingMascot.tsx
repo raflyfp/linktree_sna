@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import { X, Sparkles, MapPin, ShoppingBag } from "lucide-react";
+import { X, Sparkles, ShoppingBag, Package } from "lucide-react";
 
 const greetingMessages = [
   "Hai Sahabat PC Store! Cari cabang terdekat?",
@@ -50,6 +50,11 @@ export const ScrollGreetingMascot: React.FC = () => {
     if (el) el.scrollIntoView({ behavior: "smooth" });
   };
 
+  const scrollToProducts = () => {
+    const el = document.getElementById("products-section");
+    if (el) el.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
     <aside
       aria-label="Sapaan Maskot Interaktif PC Store"
@@ -78,18 +83,18 @@ export const ScrollGreetingMascot: React.FC = () => {
 
           <div className="flex items-center gap-2 mt-2 pt-2 border-t border-purple-100">
             <button
-              onClick={scrollToTop}
-              className="inline-flex items-center gap-1 text-[10px] font-bold text-[#6D28D9] hover:text-[#4C1D95] bg-purple-50 hover:bg-purple-100 px-2 py-1 rounded-lg transition-colors"
-            >
-              <MapPin className="w-3 h-3" />
-              Peta
-            </button>
-            <button
               onClick={scrollToStores}
-              className="inline-flex items-center gap-1 text-[10px] font-bold text-[#8B5CF6] hover:text-[#6D28D9] bg-purple-50 hover:bg-purple-100 px-2 py-1 rounded-lg transition-colors"
+              className="inline-flex items-center gap-1 text-[10px] font-bold text-[#6D28D9] hover:text-[#4C1D95] bg-purple-50 hover:bg-purple-100 px-2 py-1 rounded-lg transition-colors cursor-pointer"
             >
               <ShoppingBag className="w-3 h-3" />
-              Katalog Toko
+              Marketplace
+            </button>
+            <button
+              onClick={scrollToProducts}
+              className="inline-flex items-center gap-1 text-[10px] font-bold text-[#8B5CF6] hover:text-[#6D28D9] bg-purple-50 hover:bg-purple-100 px-2 py-1 rounded-lg transition-colors cursor-pointer"
+            >
+              <Package className="w-3 h-3" />
+              Produk
             </button>
           </div>
         </div>

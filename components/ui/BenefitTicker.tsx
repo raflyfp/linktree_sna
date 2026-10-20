@@ -100,13 +100,6 @@ export const BenefitTicker: React.FC = () => {
       {/* 1. Seamless Gradient Connector from Map Ocean to Soft Sky */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#4C1D95]/30 to-[#F5F3FF]/90 pointer-events-none" />
 
-      {/* 2. Background Drifting Mini Clouds */}
-      <div className="absolute top-1 inset-x-0 flex justify-between opacity-40 pointer-events-none animate-cloud-drift">
-        <div className="w-24 h-7 bg-white/70 rounded-full blur-[2px]" />
-        <div className="w-36 h-9 bg-white/70 rounded-full blur-[2px]" />
-        <div className="w-28 h-7 bg-white/70 rounded-full blur-[2px]" />
-      </div>
-
       {/* 3. Mascots Walking Closely Together (Dempetan & Zero Blank Gaps) */}
       <div className="relative z-10 pt-2 pb-0 overflow-hidden">
         <div className="animate-marquee flex items-end">

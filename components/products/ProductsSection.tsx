@@ -2,8 +2,7 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-import { bestSellerProducts } from "@/data/products";
-import { officialStores } from "@/data/stores";
+import { useSiteData } from "@/context/DataContext";
 import { Product } from "@/types/product";
 import {
   ShoppingBag,
@@ -18,7 +17,8 @@ import {
 } from "lucide-react";
 
 export const ProductsSection: React.FC = () => {
-  const pusatStore = officialStores.find((s) => s.id === "pc-pusat-pasuruan-shopee") || officialStores[0];
+  const { products: bestSellerProducts, stores } = useSiteData();
+  const pusatStore = stores.find((s) => s.id === "pc-pusat-pasuruan-shopee") || stores[0];
   const [hoveredCardId, setHoveredCardId] = useState<string | null>(null);
 
   return (
@@ -172,6 +172,7 @@ export const ProductsSection: React.FC = () => {
                         src={product.imageUrl}
                         alt={product.name}
                         fill
+                        unoptimized={product.imageUrl.startsWith("data:")}
                         className="object-contain drop-shadow-lg"
                         priority={idx < 3}
                       />
@@ -184,6 +185,7 @@ export const ProductsSection: React.FC = () => {
                           src={product.chibiMascot}
                           alt={`${product.name} Mascot Companion`}
                           fill
+                          unoptimized={product.chibiMascot.startsWith("data:")}
                           className="object-contain drop-shadow-md group-hover:animate-wiggle"
                         />
                       </div>

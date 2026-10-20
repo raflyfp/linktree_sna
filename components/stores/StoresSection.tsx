@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-import { officialStores } from "@/data/stores";
+import { useSiteData } from "@/context/DataContext";
 import { PlatformType } from "@/types/store";
 import {
   ShoppingBag,
@@ -20,10 +20,11 @@ import {
 } from "lucide-react";
 
 export const StoresSection: React.FC = () => {
+  const { stores } = useSiteData();
   const [selectedFilter, setSelectedFilter] = useState<"all" | PlatformType>("all");
   const [searchQuery, setSearchQuery] = useState("");
 
-  const filteredStores = officialStores.filter((store) => {
+  const filteredStores = stores.filter((store) => {
     const matchesFilter = selectedFilter === "all" || store.platform === selectedFilter;
     const matchesSearch =
       store.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -127,7 +128,7 @@ export const StoresSection: React.FC = () => {
               }`}
             >
               <Sparkles className="w-3.5 h-3.5" />
-              <span>Semua Cabang ({officialStores.length})</span>
+              <span>Semua Cabang ({stores.length})</span>
             </button>
             <button
               onClick={() => setSelectedFilter("shopee")}
@@ -138,7 +139,7 @@ export const StoresSection: React.FC = () => {
               }`}
             >
               <ShoppingBag className="w-3.5 h-3.5" />
-              <span>Shopee Official ({officialStores.filter((s) => s.platform === "shopee").length})</span>
+              <span>Shopee Official ({stores.filter((s) => s.platform === "shopee").length})</span>
             </button>
             <button
               onClick={() => setSelectedFilter("tiktok")}
@@ -149,7 +150,7 @@ export const StoresSection: React.FC = () => {
               }`}
             >
               <Zap className="w-3.5 h-3.5 text-pink-400" />
-              <span>TikTok Shop ({officialStores.filter((s) => s.platform === "tiktok").length})</span>
+              <span>TikTok Shop ({stores.filter((s) => s.platform === "tiktok").length})</span>
             </button>
           </div>
 

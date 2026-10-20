@@ -2,12 +2,13 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-import { cityGroups } from "@/data/stores";
+import { useSiteData } from "@/context/DataContext";
 import { IndonesiaSvgMap } from "@/components/map/IndonesiaSvgMap";
 import { PriorityCareLogo } from "@/components/ui/PriorityCareLogo";
 import { Sparkles, ExternalLink, ShoppingBag, X } from "lucide-react";
 
 export const HeroSection: React.FC = () => {
+  const { cityGroups } = useSiteData();
   const [pasuruanPickerOpen, setPasuruanPickerOpen] = useState(false);
   const pasuruanGroup = cityGroups.find((c) => c.cityId === "pasuruan");
 

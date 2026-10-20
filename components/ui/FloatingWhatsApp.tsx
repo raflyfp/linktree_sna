@@ -2,19 +2,19 @@
 
 import React from "react";
 import Image from "next/image";
-import { siteConfig } from "@/data/config";
-import { officialStores } from "@/data/stores";
+import { useSiteData } from "@/context/DataContext";
 
 export const FloatingWhatsApp: React.FC = () => {
-  // If phone number is configured, use wa.me, otherwise direct to Flagship Store chat (Shopee PC Pusat)
-  const isWaAvailable = siteConfig.adminWhatsApp.isAvailable;
-  const pusatStore = officialStores.find((s) => s.id === "pc-pusat-pasuruan-shopee") || officialStores[0];
+  const { config, stores } = useSiteData();
+  const waPhone = config.adminWhatsApp?.phoneNumber?.trim() || "";
+  const isWaAvailable = waPhone.length > 0;
+  const pusatStore = stores.find((s) => s.id === "pc-pusat-pasuruan-shopee") || stores[0];
   
   const targetUrl = isWaAvailable
-    ? `https://wa.me/${siteConfig.adminWhatsApp.phoneNumber}?text=${encodeURIComponent(
-        siteConfig.adminWhatsApp.defaultMessage
+    ? `https://wa.me/${waPhone}?text=${encodeURIComponent(
+        config.adminWhatsApp?.defaultMessage || "Halo Admin PC Store"
       )}`
-    : pusatStore.url;
+    : (pusatStore?.url || "https://shopee.co.id");
 
   return (
     <aside

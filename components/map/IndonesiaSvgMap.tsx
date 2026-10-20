@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
-import { cityGroups } from "@/data/stores";
+import { useSiteData } from "@/context/DataContext";
 import { MapCityGroup } from "@/types/store";
 import { Navigation, ExternalLink, ShoppingBag, X, MapPin } from "lucide-react";
 
@@ -93,6 +93,7 @@ interface IndonesiaSvgMapProps {
 }
 
 export const IndonesiaSvgMap: React.FC<IndonesiaSvgMapProps> = () => {
+  const { cityGroups } = useSiteData();
   const [hoveredCity, setHoveredCity] = useState<MapCityGroup | null>(null);
   const [activeMultiCity, setActiveMultiCity] = useState<MapCityGroup | null>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);

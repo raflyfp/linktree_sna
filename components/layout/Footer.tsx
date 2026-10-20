@@ -1,9 +1,11 @@
+"use client";
+
 import React from "react";
-import { siteConfig } from "@/data/config";
-import { officialStores } from "@/data/stores";
+import { useSiteData } from "@/context/DataContext";
 import { ShoppingCart, ExternalLink, ShieldCheck, Truck, Clock } from "lucide-react";
 
 export const Footer: React.FC = () => {
+  const { config: siteConfig, stores: officialStores } = useSiteData();
   return (
     <footer className="bg-gradient-to-b from-[#2E1065] to-[#1E0745] text-white pt-16 pb-12 border-t border-purple-900/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

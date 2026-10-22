@@ -49,7 +49,7 @@ export const HeroSection: React.FC = () => {
               <div className="relative w-44 h-36 sm:w-56 sm:h-44">
                 <div className="relative w-full h-full animate-float hover:scale-105 transition-transform duration-300">
                   <Image
-                    src="/images/products/polifix-chibi-thumbsup.png"
+                    src="/images/products/polifix-chibi-thumbsup.webp"
                     alt="Maskot Polifix Chibi Resmi PC Store"
                     fill
                     className="object-contain drop-shadow-2xl"
@@ -63,7 +63,7 @@ export const HeroSection: React.FC = () => {
                   style={{ animationDelay: "-1.5s" }}
                 >
                   <Image
-                    src="/images/badge-welcome.png"
+                    src="/images/badge-welcome.webp"
                     alt="Selamat Datang!"
                     fill
                     className="object-contain drop-shadow-xl"
@@ -80,7 +80,7 @@ export const HeroSection: React.FC = () => {
       <div className="absolute top-32 left-4 lg:left-10 opacity-40 hover:opacity-100 transition-opacity pointer-events-none hidden sm:block animate-float" style={{ animationDuration: "5.5s" }}>
         <div className="relative w-16 h-16 sm:w-20 sm:h-20">
           <Image
-            src="/images/products/poligyp-chibi-cheer.png"
+            src="/images/products/poligyp-chibi-cheer.webp"
             alt="Poligyp Cheer Floating"
             fill
             className="object-contain drop-shadow-lg"
@@ -91,7 +91,7 @@ export const HeroSection: React.FC = () => {
       <div className="absolute top-28 right-6 lg:right-16 opacity-35 hover:opacity-100 transition-opacity pointer-events-none hidden sm:block animate-float" style={{ animationDuration: "6.5s", animationDelay: "-2.5s" }}>
         <div className="relative w-16 h-16 sm:w-22 sm:h-22">
           <Image
-            src="/images/products/caressa-cotton-balls.png"
+            src="/images/products/caressa-cotton-balls.webp"
             alt="Caressa Floating"
             fill
             className="object-contain drop-shadow-lg"

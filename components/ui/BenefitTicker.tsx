@@ -17,7 +17,7 @@ export const BenefitTicker: React.FC = () => {
   const baseMascots: ParadeMascot[] = [
     {
       id: "polifix-run",
-      image: "/images/products/polifix-chibi-running.png",
+      image: "/images/products/polifix-chibi-running.webp",
       alt: "Polifix Berlari",
       width: 76,
       height: 76,
@@ -25,7 +25,7 @@ export const BenefitTicker: React.FC = () => {
     },
     {
       id: "poligyp-cheer",
-      image: "/images/products/poligyp-chibi-cheer.png",
+      image: "/images/products/poligyp-chibi-cheer.webp",
       alt: "Poligyp Ceria",
       width: 68,
       height: 72,
@@ -33,7 +33,7 @@ export const BenefitTicker: React.FC = () => {
     },
     {
       id: "polidine-shield",
-      image: "/images/products/polidine-chibi-shield.png",
+      image: "/images/products/polidine-chibi-shield.webp",
       alt: "Polidine Perisai",
       width: 80,
       height: 74,
@@ -41,7 +41,7 @@ export const BenefitTicker: React.FC = () => {
     },
     {
       id: "caressa-cotton",
-      image: "/images/products/caressa-cotton-balls.png",
+      image: "/images/products/caressa-cotton-balls.webp",
       alt: "Caressa Cotton Balls",
       width: 72,
       height: 78,
@@ -49,7 +49,7 @@ export const BenefitTicker: React.FC = () => {
     },
     {
       id: "polifix-hug",
-      image: "/images/products/polifix-chibi-hug.png",
+      image: "/images/products/polifix-chibi-hug.webp",
       alt: "Polifix Peluk Plester",
       width: 78,
       height: 74,
@@ -57,7 +57,7 @@ export const BenefitTicker: React.FC = () => {
     },
     {
       id: "wound-pad",
-      image: "/images/products/wound-dressing-pad.png",
+      image: "/images/products/wound-dressing-pad.webp",
       alt: "HOS-PAK Dressing Pad",
       width: 74,
       height: 68,
@@ -65,7 +65,7 @@ export const BenefitTicker: React.FC = () => {
     },
     {
       id: "poligyp-strong",
-      image: "/images/products/poligyp-chibi-strong.png",
+      image: "/images/products/poligyp-chibi-strong.webp",
       alt: "Poligyp Si Kuat",
       width: 68,
       height: 70,
@@ -73,7 +73,7 @@ export const BenefitTicker: React.FC = () => {
     },
     {
       id: "polifix-thumbsup",
-      image: "/images/products/polifix-chibi-thumbsup.png",
+      image: "/images/products/polifix-chibi-thumbsup.webp",
       alt: "Polifix Jempol",
       width: 82,
       height: 74,
@@ -81,7 +81,7 @@ export const BenefitTicker: React.FC = () => {
     },
     {
       id: "poligyp-thumbsup",
-      image: "/images/products/poligyp-chibi-thumbsup.png",
+      image: "/images/products/poligyp-chibi-thumbsup.webp",
       alt: "Poligyp Jempol",
       width: 68,
       height: 72,

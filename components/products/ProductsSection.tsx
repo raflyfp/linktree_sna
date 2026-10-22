@@ -31,7 +31,7 @@ export const ProductsSection: React.FC = () => {
       <div className="absolute top-28 -left-4 xl:left-6 opacity-40 hover:opacity-100 transition-opacity pointer-events-none hidden lg:block animate-float" style={{ animationDuration: "6s" }}>
         <div className="relative w-28 h-28">
           <Image
-            src="/images/products/polifix-chibi-hug.png"
+            src="/images/products/polifix-chibi-hug.webp"
             alt="Polifix Chibi Background"
             fill
             className="object-contain drop-shadow-xl"
@@ -42,7 +42,7 @@ export const ProductsSection: React.FC = () => {
       <div className="absolute top-1/3 -right-2 xl:right-8 opacity-35 hover:opacity-100 transition-opacity pointer-events-none hidden lg:block animate-float" style={{ animationDuration: "7s", animationDelay: "-2.5s" }}>
         <div className="relative w-28 h-28">
           <Image
-            src="/images/products/caressa-cotton-balls.png"
+            src="/images/products/caressa-cotton-balls.webp"
             alt="Caressa Chibi Background"
             fill
             className="object-contain drop-shadow-xl"
@@ -53,7 +53,7 @@ export const ProductsSection: React.FC = () => {
       <div className="absolute bottom-36 left-4 xl:left-8 opacity-35 hover:opacity-100 transition-opacity pointer-events-none hidden lg:block animate-float" style={{ animationDuration: "5.5s", animationDelay: "-3.5s" }}>
         <div className="relative w-24 h-24">
           <Image
-            src="/images/products/poligyp-chibi-cheer.png"
+            src="/images/products/poligyp-chibi-cheer.webp"
             alt="Poligyp Chibi Background"
             fill
             className="object-contain drop-shadow-lg"
@@ -64,7 +64,7 @@ export const ProductsSection: React.FC = () => {
       <div className="absolute bottom-20 -right-4 xl:right-8 opacity-35 hover:opacity-100 transition-opacity pointer-events-none hidden lg:block animate-float" style={{ animationDuration: "6.5s", animationDelay: "-1s" }}>
         <div className="relative w-26 h-26">
           <Image
-            src="/images/products/polidine-chibi-thumbsup.png"
+            src="/images/products/polidine-chibi-thumbsup.webp"
             alt="Polidine Chibi Background"
             fill
             className="object-contain drop-shadow-xl"
@@ -92,7 +92,7 @@ export const ProductsSection: React.FC = () => {
             <div className="absolute -top-12 -right-12 w-32 h-32 bg-purple-100 rounded-full blur-2xl group-hover:scale-150 transition-transform" />
             <div className="relative w-20 h-20 sm:w-24 sm:h-24 shrink-0 animate-float">
               <Image
-                src="/images/products/polifix-chibi-thumbsup.png"
+                src="/images/products/polifix-chibi-thumbsup.webp"
                 alt="Maskot Polifix"
                 fill
                 className="object-contain drop-shadow-md group-hover:rotate-6 transition-transform"
@@ -276,7 +276,7 @@ export const ProductsSection: React.FC = () => {
           <div className="flex items-center gap-5 text-center sm:text-left relative z-10">
             <div className="relative w-22 h-22 sm:w-28 sm:h-28 shrink-0 animate-bounce-subtle group-hover:scale-115 group-hover:rotate-3 transition-transform">
               <Image
-                src="/images/products/polifix-chibi-hug.png"
+                src="/images/products/polifix-chibi-hug.webp"
                 alt="Maskot Polifix Memeluk Plester"
                 fill
                 className="object-contain drop-shadow-xl"

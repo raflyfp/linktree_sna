@@ -43,7 +43,7 @@ export const StoresSection: React.FC = () => {
       <div className="absolute top-20 left-4 xl:left-8 opacity-40 hover:opacity-100 transition-opacity pointer-events-none hidden lg:block animate-float" style={{ animationDuration: "5.5s" }}>
         <div className="relative w-24 h-24">
           <Image
-            src="/images/products/poligyp-chibi-strong.png"
+            src="/images/products/poligyp-chibi-strong.webp"
             alt="Poligyp Chibi Background"
             fill
             className="object-contain drop-shadow-lg"
@@ -54,7 +54,7 @@ export const StoresSection: React.FC = () => {
       <div className="absolute top-1/2 -right-2 xl:right-6 opacity-35 hover:opacity-100 transition-opacity pointer-events-none hidden lg:block animate-float" style={{ animationDuration: "6.5s", animationDelay: "-2.5s" }}>
         <div className="relative w-28 h-28">
           <Image
-            src="/images/products/polidine-chibi-shield.png"
+            src="/images/products/polidine-chibi-shield.webp"
             alt="Polidine Shield Background"
             fill
             className="object-contain drop-shadow-xl"
@@ -65,7 +65,7 @@ export const StoresSection: React.FC = () => {
       <div className="absolute bottom-12 left-10 opacity-30 hover:opacity-100 transition-opacity pointer-events-none hidden lg:block animate-float" style={{ animationDuration: "7s", animationDelay: "-4s" }}>
         <div className="relative w-20 h-20">
           <Image
-            src="/images/products/wound-dressing-pad.png"
+            src="/images/products/wound-dressing-pad.webp"
             alt="Wound Dressing Background"
             fill
             className="object-contain drop-shadow-md"
@@ -93,7 +93,7 @@ export const StoresSection: React.FC = () => {
           <div className="flex items-center gap-4 bg-white p-4 rounded-3xl border-2 border-purple-200 shadow-xl shadow-purple-500/10 self-center lg:self-start hover:border-purple-400 transition-all hover:scale-105 group relative overflow-hidden">
             <div className="relative w-20 h-20 sm:w-24 sm:h-24 shrink-0 animate-bounce-subtle">
               <Image
-                src="/images/products/polifix-chibi-running.png"
+                src="/images/products/polifix-chibi-running.webp"
                 alt="Polifix Chibi Siap Antar Pesanan"
                 fill
                 className="object-contain group-hover:scale-110 group-hover:rotate-6 transition-transform"

@@ -37,7 +37,7 @@ export const FloatingWhatsApp: React.FC = () => {
         {/* WhatsApp Badge Image (100% Transparent PNG) */}
         <div className="relative w-40 sm:w-48 h-16 sm:h-20 transition-transform">
           <Image
-            src="/images/badge-whatsapp.png"
+            src="/images/badge-whatsapp.webp"
             alt="Hubungi Admin Kami"
             fill
             className="object-contain"

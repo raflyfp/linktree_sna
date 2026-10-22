@@ -109,7 +109,7 @@ export const ScrollGreetingMascot: React.FC = () => {
           title="Klik untuk kembali ke atas"
         >
           <Image
-            src="/images/products/poligyp-chibi-cheer.png"
+            src="/images/products/poligyp-chibi-cheer.webp"
             alt="Maskot Chibi PC Store Menyapa Pengunjung"
             fill
             className="object-contain drop-shadow-xl"

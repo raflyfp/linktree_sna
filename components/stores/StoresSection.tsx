@@ -97,7 +97,6 @@ export const StoresSection: React.FC = () => {
                 alt="Polifix Chibi Siap Antar Pesanan"
                 fill
                 className="object-contain group-hover:scale-110 group-hover:rotate-6 transition-transform"
-                priority
               />
             </div>
             <div className="text-left max-w-[210px]">

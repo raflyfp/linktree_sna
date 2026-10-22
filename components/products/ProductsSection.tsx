@@ -96,7 +96,6 @@ export const ProductsSection: React.FC = () => {
                 alt="Maskot Polifix"
                 fill
                 className="object-contain drop-shadow-md group-hover:rotate-6 transition-transform"
-                priority
               />
             </div>
             <div className="text-left max-w-[210px] relative z-10">
@@ -157,7 +156,6 @@ export const ProductsSection: React.FC = () => {
                         fill
                         unoptimized={product.imageUrl.startsWith("data:")}
                         className="object-contain drop-shadow-lg"
-                        priority={idx < 3}
                       />
                     </div>
 
@@ -282,7 +280,6 @@ export const ProductsSection: React.FC = () => {
                 alt="Maskot Polifix Memeluk Plester"
                 fill
                 className="object-contain drop-shadow-xl"
-                priority
               />
             </div>
             <div>

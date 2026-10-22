@@ -41,7 +41,6 @@ export const FloatingWhatsApp: React.FC = () => {
             alt="Hubungi Admin Kami"
             fill
             className="object-contain"
-            priority
           />
         </div>
       </a>

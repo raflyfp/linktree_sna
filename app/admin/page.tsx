@@ -1451,7 +1451,7 @@ export default function AdminPage() {
                   >
                     {/* Underlying Map Image */}
                     <img
-                      src="/images/indonesia-cartoon-map.png"
+                      src="/images/indonesia-cartoon-map.webp"
                       alt="Peta Indonesia"
                       className="w-full h-full object-fill pointer-events-none"
                     />

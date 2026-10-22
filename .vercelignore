@@ -1,0 +1,8 @@
+# Unused large master assets and duplicates in public
+public/chibi_product_mascots_master.png
+public/Playful Cartoon Map of Indonesia.png
+public/*.mp4
+public/images/*.mp4
+public/image copy*.png
+public/image.png
+public/images/indonesia-cartoon-map.png

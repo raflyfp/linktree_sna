@@ -336,12 +336,13 @@ export const IndonesiaSvgMap: React.FC<IndonesiaSvgMapProps> = () => {
         <div
           ref={scrollContainerRef}
           onScroll={() => setHasSwiped(true)}
-          className="w-full overflow-x-auto scrollbar-none touch-pan-x"
+          className="w-full overflow-x-auto scrollbar-none touch-pan-x touch-pan-y overscroll-x-contain"
+          style={{ WebkitOverflowScrolling: "touch" }}
         >
           <div className="relative min-w-[760px] md:min-w-full aspect-[2.5/1] w-full">
             {/* 1. Underlying Crisp Cartoon Map of Indonesia (100% Clean, No Dark Overlay) */}
             <Image
-              src="/images/indonesia-cartoon-map.png"
+              src="/images/indonesia-cartoon-map.webp"
               alt="Peta Kartun Indonesia PC Store"
               fill
               priority
@@ -352,7 +353,7 @@ export const IndonesiaSvgMap: React.FC<IndonesiaSvgMapProps> = () => {
             {/* 2. Scalable SVG Overlay (viewBox 0 0 1000 400 exactly matches 2.5:1 image aspect) */}
             <svg
               viewBox="0 0 1000 400"
-              className="absolute inset-0 w-full h-full pointer-events-auto outline-none focus:outline-none select-none"
+              className="absolute inset-0 w-full h-full pointer-events-none outline-none focus:outline-none select-none"
               style={{ outline: "none", WebkitTapHighlightColor: "transparent" }}
               preserveAspectRatio="none"
               role="region"
@@ -403,7 +404,7 @@ export const IndonesiaSvgMap: React.FC<IndonesiaSvgMapProps> = () => {
                   <g
                     key={group.cityId}
                     transform={`translate(${posX}, ${posY})`}
-                    className="cursor-pointer transition-transform duration-200 outline-none focus:outline-none focus-visible:outline-none select-none"
+                    className="cursor-pointer pointer-events-auto transition-transform duration-200 outline-none focus:outline-none focus-visible:outline-none select-none"
                     style={{ outline: "none", WebkitTapHighlightColor: "transparent" }}
                     onClick={() => handleCityClick(group)}
                     onMouseEnter={() => setHoveredCity(group)}

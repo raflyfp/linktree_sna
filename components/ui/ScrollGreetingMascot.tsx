@@ -112,8 +112,7 @@ export const ScrollGreetingMascot: React.FC = () => {
             src="/images/products/poligyp-chibi-cheer.png"
             alt="Maskot Chibi PC Store Menyapa Pengunjung"
             fill
-            className="object-contain drop-shadow-2xl"
-            priority
+            className="object-contain drop-shadow-xl"
           />
         </div>
       </div>

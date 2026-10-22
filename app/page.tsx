@@ -1,13 +1,22 @@
 "use client";
 
 import React from "react";
+import dynamic from "next/dynamic";
 import { Footer } from "@/components/layout/Footer";
 import { HeroSection } from "@/components/hero/HeroSection";
 import { BenefitTicker } from "@/components/ui/BenefitTicker";
 import { StoresSection } from "@/components/stores/StoresSection";
 import { ProductsSection } from "@/components/products/ProductsSection";
-import { FloatingWhatsApp } from "@/components/ui/FloatingWhatsApp";
-import { ScrollGreetingMascot } from "@/components/ui/ScrollGreetingMascot";
+
+const FloatingWhatsApp = dynamic(
+  () => import("@/components/ui/FloatingWhatsApp").then((mod) => mod.FloatingWhatsApp),
+  { ssr: false }
+);
+
+const ScrollGreetingMascot = dynamic(
+  () => import("@/components/ui/ScrollGreetingMascot").then((mod) => mod.ScrollGreetingMascot),
+  { ssr: false }
+);
 
 export default function Home() {
   return (

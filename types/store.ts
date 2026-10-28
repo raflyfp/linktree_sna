@@ -21,6 +21,7 @@ export interface StoreLocation {
     x: number; // percentage from left
     y: number; // percentage from top
   };
+  orderIndex?: number;
 }
 
 export interface MapCityGroup {

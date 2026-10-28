@@ -35,7 +35,11 @@ import {
   ZoomOut,
   RotateCcw,
   Upload,
-  Image as ImageIcon
+  Image as ImageIcon,
+  ChevronUp,
+  ChevronDown,
+  ArrowUpDown,
+  Loader2,
 } from "lucide-react";
 
 // Preset Kota Populer di Indonesia dengan koordinat peta terkalibrasi (viewBox 0 0 1000 400)
@@ -163,13 +167,13 @@ export default function AdminPage() {
 
   // ================= ADMIN DASHBOARD STATE =================
   const [activeTab, setActiveTab] = useState<"stores" | "products" | "contact" | "backup">("stores");
-  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [toastState, setToastState] = useState<{ message: string; type: "success" | "error" | "info" } | null>(null);
 
-  const showToast = (msg: string) => {
-    setToastMessage(msg);
+  const showToast = (message: string, type: "success" | "error" | "info" = "success") => {
+    setToastState({ message, type });
     setTimeout(() => {
-      setToastMessage(null);
-    }, 3500);
+      setToastState(null);
+    }, 4500);
   };
 
   // ================= STORES LOGIC & PIN PICKER WITH ZOOM =================
@@ -298,7 +302,26 @@ export default function AdminPage() {
     }));
   };
 
-  const handleSaveStore = (e: React.FormEvent) => {
+  const handleMoveStore = async (index: number, direction: "up" | "down") => {
+    const targetIndex = direction === "up" ? index - 1 : index + 1;
+    if (targetIndex < 0 || targetIndex >= stores.length) return;
+
+    const newStores = [...stores];
+    const temp = newStores[index];
+    newStores[index] = newStores[targetIndex];
+    newStores[targetIndex] = temp;
+
+    const res = await saveStores(newStores);
+    if (res?.error) {
+      showToast(`Urutan toko diubah (${res.error})`, "error");
+    } else if (res?.supabaseSynced) {
+      showToast("Urutan toko berhasil diperbarui & disimpan ke Supabase!", "success");
+    } else {
+      showToast("Urutan toko berhasil diperbarui di browser!", "info");
+    }
+  };
+
+  const handleSaveStore = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!storeFormData.name.trim() || !storeFormData.url.trim()) {
       alert("Nama toko dan URL wajib diisi!");
@@ -308,14 +331,30 @@ export default function AdminPage() {
     let updatedStores: StoreLocation[];
     if (editingStore) {
       updatedStores = stores.map((s) => (s.id === editingStore.id ? storeFormData : s));
-      showToast(`Toko "${storeFormData.name}" berhasil diperbarui!`);
     } else {
       updatedStores = [...stores, storeFormData];
-      showToast(`Toko baru "${storeFormData.name}" berhasil ditambahkan!`);
     }
 
-    saveStores(updatedStores);
+    const res = await saveStores(updatedStores);
     setIsStoreModalOpen(false);
+
+    if (res?.error) {
+      showToast(`⚠️ Tersimpan di lokal, tapi Supabase gagal: ${res.error}`, "error");
+    } else if (res?.supabaseSynced) {
+      showToast(
+        editingStore
+          ? `Toko "${storeFormData.name}" berhasil diperbarui & tersinkron ke Supabase!`
+          : `Toko baru "${storeFormData.name}" berhasil ditambahkan ke Supabase!`,
+        "success"
+      );
+    } else {
+      showToast(
+        editingStore
+          ? `Toko "${storeFormData.name}" diperbarui di browser lokal!`
+          : `Toko baru "${storeFormData.name}" ditambahkan di browser lokal!`,
+        "info"
+      );
+    }
   };
 
   const handleDeleteStore = (storeId: string, storeName: string) => {
@@ -424,7 +463,26 @@ export default function AdminPage() {
     setIsProductModalOpen(true);
   };
 
-  const handleSaveProduct = (e: React.FormEvent) => {
+  const handleMoveProduct = async (index: number, direction: "up" | "down") => {
+    const targetIndex = direction === "up" ? index - 1 : index + 1;
+    if (targetIndex < 0 || targetIndex >= products.length) return;
+
+    const newProducts = [...products];
+    const temp = newProducts[index];
+    newProducts[index] = newProducts[targetIndex];
+    newProducts[targetIndex] = temp;
+
+    const res = await saveProducts(newProducts);
+    if (res?.error) {
+      showToast(`Urutan produk diubah (${res.error})`, "error");
+    } else if (res?.supabaseSynced) {
+      showToast("Urutan produk berhasil diperbarui & disimpan ke Supabase!", "success");
+    } else {
+      showToast("Urutan produk berhasil diperbarui di browser!", "info");
+    }
+  };
+
+  const handleSaveProduct = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!productFormData.name.trim()) {
       alert("Nama produk wajib diisi!");
@@ -450,14 +508,30 @@ export default function AdminPage() {
     let updatedProducts: Product[];
     if (editingProduct) {
       updatedProducts = products.map((p) => (p.id === editingProduct.id ? payload : p));
-      showToast(`Produk "${payload.name}" berhasil diperbarui!`);
     } else {
       updatedProducts = [...products, payload];
-      showToast(`Produk baru "${payload.name}" berhasil ditambahkan!`);
     }
 
-    saveProducts(updatedProducts);
+    const res = await saveProducts(updatedProducts);
     setIsProductModalOpen(false);
+
+    if (res?.error) {
+      showToast(`⚠️ Tersimpan di lokal, tapi Supabase gagal: ${res.error}`, "error");
+    } else if (res?.supabaseSynced) {
+      showToast(
+        editingProduct
+          ? `Produk "${payload.name}" berhasil diperbarui & tersinkron ke Supabase!`
+          : `Produk baru "${payload.name}" berhasil ditambahkan ke Supabase!`,
+        "success"
+      );
+    } else {
+      showToast(
+        editingProduct
+          ? `Produk "${payload.name}" diperbarui di browser lokal!`
+          : `Produk baru "${payload.name}" ditambahkan di browser lokal!`,
+        "info"
+      );
+    }
   };
 
   const handleDeleteProduct = (productId: string, productName: string) => {
@@ -491,7 +565,7 @@ export default function AdminPage() {
     confirmPassword: "",
   });
 
-  const handleSaveContactConfig = (e: React.FormEvent) => {
+  const handleSaveContactConfig = async (e: React.FormEvent) => {
     e.preventDefault();
     const updatedConfig = {
       ...config,
@@ -509,7 +583,7 @@ export default function AdminPage() {
         instagram: configFormData.instagram,
       },
     };
-    saveConfig(updatedConfig);
+    const res = await saveConfig(updatedConfig);
 
     // Update password jika diisi
     if (passwordChangeData.newPassword.trim()) {
@@ -524,11 +598,17 @@ export default function AdminPage() {
       setAdminCreds(newCreds);
       localStorage.setItem("pc_store_admin_creds", JSON.stringify(newCreds));
       setPasswordChangeData({ newUsername: newCreds.username, newPassword: "", confirmPassword: "" });
-      showToast("Pengaturan kontak & password admin berhasil diperbarui!");
+      showToast("Pengaturan kontak & password admin berhasil diperbarui!", "success");
       return;
     }
 
-    showToast("Pengaturan kontak & brand berhasil disimpan!");
+    if (res?.error) {
+      showToast(`⚠️ Tersimpan di lokal, tapi Supabase gagal: ${res.error}`, "error");
+    } else if (res?.supabaseSynced) {
+      showToast("Pengaturan kontak & brand berhasil disimpan ke Supabase!", "success");
+    } else {
+      showToast("Pengaturan kontak & brand berhasil disimpan di browser!", "info");
+    }
   };
 
   // ================= BACKUP & EXPORT LOGIC =================
@@ -646,10 +726,22 @@ export default function AdminPage() {
   return (
     <div className="min-h-screen bg-slate-100 text-slate-800 font-sans pb-16">
       {/* Toast Notification */}
-      {toastMessage && (
-        <div className="fixed top-5 right-5 z-50 bg-emerald-700 text-white px-4 py-3 rounded shadow-md flex items-center gap-2 text-sm font-medium">
-          <CheckCircle2 className="w-5 h-5 shrink-0" />
-          <span>{toastMessage}</span>
+      {toastState && (
+        <div
+          className={`fixed top-5 right-5 z-50 px-4 py-3 rounded shadow-lg flex items-center gap-2.5 text-sm font-medium border transition-all ${
+            toastState.type === "error"
+              ? "bg-rose-700 text-white border-rose-600"
+              : toastState.type === "info"
+                ? "bg-slate-900 text-white border-slate-700"
+                : "bg-emerald-700 text-white border-emerald-600"
+          }`}
+        >
+          {toastState.type === "error" ? (
+            <X className="w-5 h-5 shrink-0" />
+          ) : (
+            <CheckCircle2 className="w-5 h-5 shrink-0" />
+          )}
+          <span>{toastState.message}</span>
         </div>
       )}
 
@@ -857,6 +949,7 @@ export default function AdminPage() {
                 <table className="w-full text-left text-sm text-slate-700">
                   <thead className="bg-slate-50 border-b border-slate-200 text-xs font-bold text-slate-600 uppercase tracking-wider">
                     <tr>
+                      <th className="py-3 px-4 w-28">Urutan</th>
                       <th className="py-3 px-4">Platform</th>
                       <th className="py-3 px-4">Nama Toko &amp; Cabang</th>
                       <th className="py-3 px-4">Kota / Provinsi</th>
@@ -869,84 +962,117 @@ export default function AdminPage() {
                   <tbody className="divide-y divide-slate-200">
                     {filteredStores.length === 0 ? (
                       <tr>
-                        <td colSpan={7} className="py-8 text-center text-slate-500">
+                        <td colSpan={8} className="py-8 text-center text-slate-500">
                           Tidak ada toko marketplace yang sesuai pencarian.
                         </td>
                       </tr>
                     ) : (
-                      filteredStores.map((store) => (
-                        <tr key={store.id} className="hover:bg-slate-50">
-                          <td className="py-3 px-4 whitespace-nowrap">
-                            <span
-                              className={`inline-block px-2 py-0.5 text-xs font-bold rounded ${store.platform === "shopee"
-                                ? "bg-orange-100 text-orange-800"
-                                : store.platform === "tiktok"
-                                  ? "bg-slate-900 text-white"
-                                  : store.platform === "tokopedia"
-                                    ? "bg-emerald-100 text-emerald-800"
-                                    : "bg-slate-200 text-slate-800"
-                                }`}
-                            >
-                              {store.platform.toUpperCase()}
-                            </span>
-                          </td>
-                          <td className="py-3 px-4">
-                            <div className="font-semibold text-slate-900">{store.name}</div>
-                            <div className="text-xs text-slate-500">{store.branchName}</div>
-                          </td>
-                          <td className="py-3 px-4 whitespace-nowrap">
-                            <div className="font-medium text-slate-800">{store.city}</div>
-                            <div className="text-xs text-slate-500">{store.province}</div>
-                          </td>
-                          <td className="py-3 px-4 whitespace-nowrap">
-                            <span className="inline-flex items-center gap-1 font-mono text-xs bg-slate-100 px-2 py-0.5 rounded text-slate-700 border border-slate-200">
-                              <MapPin className="w-3 h-3 text-red-500" />
-                              <span>X: {store.mapCoordinates?.x ?? 50}% | Y: {store.mapCoordinates?.y ?? 50}%</span>
-                            </span>
-                          </td>
-                          <td className="py-3 px-4 whitespace-nowrap">
-                            {store.isPusat ? (
-                              <span className="bg-blue-100 text-blue-800 text-xs font-bold px-2 py-0.5 rounded">
-                                Toko Pusat
-                              </span>
-                            ) : (
-                              <span className="bg-slate-100 text-slate-700 text-xs font-medium px-2 py-0.5 rounded border border-slate-200">
-                                Cabang
-                              </span>
-                            )}
-                          </td>
-                          <td className="py-3 px-4 max-w-xs truncate">
-                            <a
-                              href={store.url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-xs text-blue-600 hover:text-blue-800 hover:underline flex items-center gap-1 truncate"
-                              title={store.url}
-                            >
-                              <span className="truncate">{store.url}</span>
-                              <ExternalLink className="w-3 h-3 shrink-0" />
-                            </a>
-                          </td>
-                          <td className="py-3 px-4 text-right whitespace-nowrap">
-                            <div className="flex items-center justify-end gap-1.5">
-                              <button
-                                onClick={() => openEditStoreModal(store)}
-                                className="p-1.5 text-slate-600 hover:text-blue-600 hover:bg-slate-100 rounded"
-                                title="Edit Toko &amp; Pin"
+                      filteredStores.map((store) => {
+                        const actualIndex = stores.findIndex((s) => s.id === store.id);
+                        const isFirst = actualIndex === 0;
+                        const isLast = actualIndex === stores.length - 1;
+
+                        return (
+                          <tr key={store.id} className="hover:bg-slate-50">
+                            <td className="py-3 px-4 whitespace-nowrap">
+                              <div className="flex items-center gap-1.5">
+                                <span className="font-mono text-xs font-bold text-slate-700 bg-slate-100 border border-slate-300 px-2 py-0.5 rounded min-w-7 text-center">
+                                  #{actualIndex + 1}
+                                </span>
+                                <div className="flex items-center">
+                                  <button
+                                    type="button"
+                                    onClick={() => handleMoveStore(actualIndex, "up")}
+                                    disabled={isFirst}
+                                    className="p-1 text-slate-500 hover:text-blue-600 hover:bg-slate-200 disabled:opacity-20 disabled:hover:bg-transparent rounded transition-colors"
+                                    title="Geser Naik (Prioritas ke Atas)"
+                                  >
+                                    <ChevronUp className="w-4 h-4" />
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => handleMoveStore(actualIndex, "down")}
+                                    disabled={isLast}
+                                    className="p-1 text-slate-500 hover:text-blue-600 hover:bg-slate-200 disabled:opacity-20 disabled:hover:bg-transparent rounded transition-colors"
+                                    title="Geser Turun"
+                                  >
+                                    <ChevronDown className="w-4 h-4" />
+                                  </button>
+                                </div>
+                              </div>
+                            </td>
+                            <td className="py-3 px-4 whitespace-nowrap">
+                              <span
+                                className={`inline-block px-2 py-0.5 text-xs font-bold rounded ${store.platform === "shopee"
+                                  ? "bg-orange-100 text-orange-800"
+                                  : store.platform === "tiktok"
+                                    ? "bg-slate-900 text-white"
+                                    : store.platform === "tokopedia"
+                                      ? "bg-emerald-100 text-emerald-800"
+                                      : "bg-slate-200 text-slate-800"
+                                  }`}
                               >
-                                <Edit className="w-4 h-4" />
-                              </button>
-                              <button
-                                onClick={() => handleDeleteStore(store.id, store.name)}
-                                className="p-1.5 text-slate-600 hover:text-rose-600 hover:bg-slate-100 rounded"
-                                title="Hapus Toko"
+                                {store.platform.toUpperCase()}
+                              </span>
+                            </td>
+                            <td className="py-3 px-4">
+                              <div className="font-semibold text-slate-900">{store.name}</div>
+                              <div className="text-xs text-slate-500">{store.branchName}</div>
+                            </td>
+                            <td className="py-3 px-4 whitespace-nowrap">
+                              <div className="font-medium text-slate-800">{store.city}</div>
+                              <div className="text-xs text-slate-500">{store.province}</div>
+                            </td>
+                            <td className="py-3 px-4 whitespace-nowrap">
+                              <span className="inline-flex items-center gap-1 font-mono text-xs bg-slate-100 px-2 py-0.5 rounded text-slate-700 border border-slate-200">
+                                <MapPin className="w-3 h-3 text-red-500" />
+                                <span>X: {store.mapCoordinates?.x ?? 50}% | Y: {store.mapCoordinates?.y ?? 50}%</span>
+                              </span>
+                            </td>
+                            <td className="py-3 px-4 whitespace-nowrap">
+                              {store.isPusat ? (
+                                <span className="bg-blue-100 text-blue-800 text-xs font-bold px-2 py-0.5 rounded">
+                                  Toko Pusat
+                                </span>
+                              ) : (
+                                <span className="bg-slate-100 text-slate-700 text-xs font-medium px-2 py-0.5 rounded border border-slate-200">
+                                  Cabang
+                                </span>
+                              )}
+                            </td>
+                            <td className="py-3 px-4 max-w-xs truncate">
+                              <a
+                                href={store.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-xs text-blue-600 hover:text-blue-800 hover:underline flex items-center gap-1 truncate"
+                                title={store.url}
                               >
-                                <Trash2 className="w-4 h-4" />
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))
+                                <span className="truncate">{store.url}</span>
+                                <ExternalLink className="w-3 h-3 shrink-0" />
+                              </a>
+                            </td>
+                            <td className="py-3 px-4 text-right whitespace-nowrap">
+                              <div className="flex items-center justify-end gap-1.5">
+                                <button
+                                  onClick={() => openEditStoreModal(store)}
+                                  className="p-1.5 text-slate-600 hover:text-blue-600 hover:bg-slate-100 rounded"
+                                  title="Edit Toko &amp; Pin"
+                                >
+                                  <Edit className="w-4 h-4" />
+                                </button>
+                                <button
+                                  onClick={() => handleDeleteStore(store.id, store.name)}
+                                  className="p-1.5 text-slate-600 hover:text-rose-600 hover:bg-slate-100 rounded"
+                                  title="Hapus Toko"
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })
                     )}
                   </tbody>
                 </table>
@@ -980,14 +1106,56 @@ export default function AdminPage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {filteredProducts.map((product) => (
-                <div
-                  key={product.id}
-                  className="bg-white border border-slate-200 rounded p-4 flex flex-col justify-between"
-                >
-                  <div className="space-y-3">
-                    {/* Thumbnail Image Box */}
-                    <div className="relative aspect-4/3 w-full bg-slate-50 border border-slate-200 rounded flex items-center justify-center overflow-hidden p-2">
+              {filteredProducts.map((product) => {
+                const actualProductIndex = products.findIndex((p) => p.id === product.id);
+                const isFirstProduct = actualProductIndex === 0;
+                const isLastProduct = actualProductIndex === products.length - 1;
+
+                return (
+                  <div
+                    key={product.id}
+                    className="bg-white border border-slate-200 rounded p-4 flex flex-col justify-between"
+                  >
+                    <div className="space-y-3">
+                      {/* Urutan Control Header */}
+                      <div className="flex items-center justify-between pb-2 border-b border-slate-100 text-xs">
+                        <div className="flex items-center gap-1.5">
+                          <span className="font-mono text-xs font-bold text-blue-700 bg-blue-50 border border-blue-200 px-2 py-0.5 rounded">
+                            Urutan #{actualProductIndex + 1}
+                          </span>
+                          {isFirstProduct && (
+                            <span className="text-[10px] text-emerald-600 font-semibold bg-emerald-50 px-1.5 py-0.5 rounded">
+                              Utama
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="flex items-center gap-1">
+                          <button
+                            type="button"
+                            onClick={() => handleMoveProduct(actualProductIndex, "up")}
+                            disabled={isFirstProduct}
+                            className="px-2 py-0.5 text-slate-600 hover:text-blue-600 hover:bg-slate-100 disabled:opacity-20 disabled:hover:bg-transparent rounded flex items-center gap-0.5 text-xs font-medium border border-slate-200 disabled:border-transparent transition-colors"
+                            title="Geser Lebih Maju / Prioritas"
+                          >
+                            <ChevronUp className="w-3.5 h-3.5" />
+                            <span>Naik</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleMoveProduct(actualProductIndex, "down")}
+                            disabled={isLastProduct}
+                            className="px-2 py-0.5 text-slate-600 hover:text-blue-600 hover:bg-slate-100 disabled:opacity-20 disabled:hover:bg-transparent rounded flex items-center gap-0.5 text-xs font-medium border border-slate-200 disabled:border-transparent transition-colors"
+                            title="Geser Turun"
+                          >
+                            <ChevronDown className="w-3.5 h-3.5" />
+                            <span>Turun</span>
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Thumbnail Image Box */}
+                      <div className="relative aspect-4/3 w-full bg-slate-50 border border-slate-200 rounded flex items-center justify-center overflow-hidden p-2">
                       {product.imageUrl ? (
                         <img
                           src={product.imageUrl}
@@ -1068,8 +1236,9 @@ export default function AdminPage() {
                     </div>
                   </div>
                 </div>
-              ))}
-            </div>
+              );
+            })}
+          </div>
           </section>
         )}
 

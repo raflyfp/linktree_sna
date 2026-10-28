@@ -13,6 +13,9 @@ import {
   saveStoredStores,
   saveStoredProducts,
   saveStoredConfig,
+  cacheStoredStoresLocally,
+  cacheStoredProductsLocally,
+  cacheStoredConfigLocally,
   deleteStoreFromSupabase,
   deleteProductFromSupabase,
   resetAllDataToDefault,
@@ -24,6 +27,12 @@ import {
   DATA_UPDATE_EVENT,
 } from "@/lib/dataService";
 
+export interface SaveResult {
+  success: boolean;
+  supabaseSynced: boolean;
+  error?: string;
+}
+
 interface DataContextType {
   stores: StoreLocation[];
   products: Product[];
@@ -31,11 +40,11 @@ interface DataContextType {
   cityGroups: MapCityGroup[];
   isHydrated: boolean;
   isSupabaseConnected: boolean;
-  saveStores: (newStores: StoreLocation[]) => void;
-  deleteStore: (storeId: string) => void;
-  saveProducts: (newProducts: Product[]) => void;
-  deleteProduct: (productId: string) => void;
-  saveConfig: (newConfig: SiteConfig) => void;
+  saveStores: (newStores: StoreLocation[]) => Promise<SaveResult>;
+  deleteStore: (storeId: string) => Promise<void>;
+  saveProducts: (newProducts: Product[]) => Promise<SaveResult>;
+  deleteProduct: (productId: string) => Promise<void>;
+  saveConfig: (newConfig: SiteConfig) => Promise<SaveResult>;
   resetToDefault: () => void;
 }
 
@@ -46,11 +55,11 @@ const DataContext = createContext<DataContextType>({
   cityGroups: groupStoresIntoCities(defaultOfficialStores),
   isHydrated: false,
   isSupabaseConnected: false,
-  saveStores: () => {},
-  deleteStore: () => {},
-  saveProducts: () => {},
-  deleteProduct: () => {},
-  saveConfig: () => {},
+  saveStores: async () => ({ success: true, supabaseSynced: false }),
+  deleteStore: async () => {},
+  saveProducts: async () => ({ success: true, supabaseSynced: false }),
+  deleteProduct: async () => {},
+  saveConfig: async () => ({ success: true, supabaseSynced: false }),
   resetToDefault: () => {},
 });
 
@@ -80,15 +89,15 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       if (sbStores && sbStores.length > 0) {
         setStores(sbStores);
-        saveStoredStores(sbStores); // cache ke localStorage
+        cacheStoredStoresLocally(sbStores); // cache ke localStorage tanpa re-upsert
       }
       if (sbProducts && sbProducts.length > 0) {
         setProducts(sbProducts);
-        saveStoredProducts(sbProducts); // cache ke localStorage
+        cacheStoredProductsLocally(sbProducts); // cache ke localStorage tanpa re-upsert
       }
       if (sbConfig) {
         setConfig(sbConfig);
-        saveStoredConfig(sbConfig); // cache ke localStorage
+        cacheStoredConfigLocally(sbConfig); // cache ke localStorage tanpa re-upsert
       }
 
       setIsSupabaseConnected(true);
@@ -98,9 +107,13 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   useEffect(() => {
-    loadLocalData();
-    setIsHydrated(true);
-    loadSupabaseData();
+    let isMounted = true;
+    queueMicrotask(() => {
+      if (!isMounted) return;
+      loadLocalData();
+      setIsHydrated(true);
+      loadSupabaseData();
+    });
 
     const handleUpdate = () => {
       loadLocalData();
@@ -110,38 +123,39 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     window.addEventListener("storage", handleUpdate);
 
     return () => {
+      isMounted = false;
       window.removeEventListener(DATA_UPDATE_EVENT, handleUpdate);
       window.removeEventListener("storage", handleUpdate);
     };
   }, []);
 
-  const handleSaveStores = (newStores: StoreLocation[]) => {
+  const handleSaveStores = async (newStores: StoreLocation[]): Promise<SaveResult> => {
     setStores(newStores);
-    saveStoredStores(newStores);
+    return await saveStoredStores(newStores);
   };
 
-  const handleDeleteStore = (storeId: string) => {
+  const handleDeleteStore = async (storeId: string): Promise<void> => {
     const updated = stores.filter((s) => s.id !== storeId);
     setStores(updated);
-    saveStoredStores(updated);
-    deleteStoreFromSupabase(storeId);
+    await saveStoredStores(updated);
+    await deleteStoreFromSupabase(storeId);
   };
 
-  const handleSaveProducts = (newProducts: Product[]) => {
+  const handleSaveProducts = async (newProducts: Product[]): Promise<SaveResult> => {
     setProducts(newProducts);
-    saveStoredProducts(newProducts);
+    return await saveStoredProducts(newProducts);
   };
 
-  const handleDeleteProduct = (productId: string) => {
+  const handleDeleteProduct = async (productId: string): Promise<void> => {
     const updated = products.filter((p) => p.id !== productId);
     setProducts(updated);
-    saveStoredProducts(updated);
-    deleteProductFromSupabase(productId);
+    await saveStoredProducts(updated);
+    await deleteProductFromSupabase(productId);
   };
 
-  const handleSaveConfig = (newConfig: SiteConfig) => {
+  const handleSaveConfig = async (newConfig: SiteConfig): Promise<SaveResult> => {
     setConfig(newConfig);
-    saveStoredConfig(newConfig);
+    return await saveStoredConfig(newConfig);
   };
 
   const handleResetToDefault = () => {

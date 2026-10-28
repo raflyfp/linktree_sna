@@ -14,5 +14,6 @@ export interface Product {
   chibiQuote?: string;
   rating?: string;
   soldCount?: string;
+  orderIndex?: number;
 }
 

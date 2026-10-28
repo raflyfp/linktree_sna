@@ -14,7 +14,45 @@ export { isSupabaseConfigured };
 
 // ================= MAPPER FUNCTIONS (Database snake_case <-> App camelCase) =================
 
-function mapDbRowToStore(row: any): StoreLocation {
+interface DbStoreRow {
+  id: string;
+  name: string;
+  branch_name: string;
+  city: string;
+  province: string;
+  platform: 'shopee' | 'tiktok' | 'tokopedia' | 'other';
+  platform_label: string;
+  url: string;
+  is_pusat?: boolean;
+  badge?: string;
+  description?: string;
+  chibi_image?: string;
+  delivery_speed?: string;
+  promo_text?: string;
+  rating?: string;
+  map_coordinates?: { x: number; y: number };
+  order_index?: number;
+}
+
+interface DbProductRow {
+  id: string;
+  name: string;
+  slug: string;
+  category: string;
+  short_description: string;
+  is_best_seller?: boolean;
+  badge?: string;
+  image_url: string;
+  chibi_mascot?: string;
+  target_branch_id?: string;
+  features?: string[];
+  chibi_quote?: string;
+  rating?: string;
+  sold_count?: string;
+  order_index?: number;
+}
+
+function mapDbRowToStore(row: DbStoreRow): StoreLocation {
   return {
     id: row.id,
     name: row.name,
@@ -32,6 +70,7 @@ function mapDbRowToStore(row: any): StoreLocation {
     promoText: row.promo_text,
     rating: row.rating,
     mapCoordinates: row.map_coordinates || { x: 50, y: 50 },
+    orderIndex: row.order_index ?? 0,
   };
 }
 
@@ -57,7 +96,7 @@ function mapStoreToDbRow(store: StoreLocation, index: number = 0) {
   };
 }
 
-function mapDbRowToProduct(row: any): Product {
+function mapDbRowToProduct(row: DbProductRow): Product {
   return {
     id: row.id,
     name: row.name,
@@ -73,6 +112,7 @@ function mapDbRowToProduct(row: any): Product {
     chibiQuote: row.chibi_quote,
     rating: row.rating,
     soldCount: row.sold_count,
+    orderIndex: row.order_index ?? 0,
   };
 }
 
@@ -199,23 +239,55 @@ export function getStoredStores(): StoreLocation[] {
 }
 
 /**
- * Menyimpan data Toko ke localStorage & sinkronisasi ke Supabase jika terhubung.
+ * Cache data Toko langsung ke localStorage (tanpa trigger sync balik ke Supabase).
  */
-export async function saveStoredStores(stores: StoreLocation[]): Promise<void> {
+export function cacheStoredStoresLocally(stores: StoreLocation[]): void {
   if (typeof window === "undefined") return;
   try {
     localStorage.setItem(STORAGE_KEY_STORES, JSON.stringify(stores));
-    window.dispatchEvent(new CustomEvent(DATA_UPDATE_EVENT, { detail: { type: "stores" } }));
+  } catch (err) {
+    console.error("Gagal cache stores ke localStorage:", err);
+  }
+}
 
-    // Sinkronisasi ke Supabase
-    if (isSupabaseConfigured() && supabase) {
+/**
+ * Menyimpan data Toko ke localStorage & sinkronisasi ke Supabase jika terhubung.
+ */
+export async function saveStoredStores(
+  stores: StoreLocation[],
+  syncToSupabase: boolean = true
+): Promise<{ success: boolean; supabaseSynced: boolean; error?: string }> {
+  if (typeof window === "undefined") return { success: false, supabaseSynced: false };
+  let localSaved = false;
+  try {
+    localStorage.setItem(STORAGE_KEY_STORES, JSON.stringify(stores));
+    localSaved = true;
+    window.dispatchEvent(new CustomEvent(DATA_UPDATE_EVENT, { detail: { type: "stores" } }));
+  } catch (err: unknown) {
+    console.error("Gagal menyimpan stores ke localStorage:", err);
+    if ((err as Error)?.name === "QuotaExceededError") {
+      return { success: false, supabaseSynced: false, error: "Memori browser (LocalStorage) penuh!" };
+    }
+  }
+
+  // Sinkronisasi ke Supabase
+  if (syncToSupabase && isSupabaseConfigured() && supabase) {
+    try {
       const rows = stores.map((s, idx) => mapStoreToDbRow(s, idx + 1));
       const { error } = await supabase.from("stores").upsert(rows);
-      if (error) console.error("Gagal sinkronisasi stores ke Supabase:", error.message);
+      if (error) {
+        console.error("Gagal sinkronisasi stores ke Supabase:", error.message);
+        return { success: localSaved, supabaseSynced: false, error: error.message };
+      }
+      return { success: true, supabaseSynced: true };
+    } catch (err: unknown) {
+      console.error("Exception saat sync stores ke Supabase:", err);
+      const errorMsg = err instanceof Error ? err.message : "Koneksi Supabase terputus";
+      return { success: localSaved, supabaseSynced: false, error: errorMsg };
     }
-  } catch (err) {
-    console.error("Gagal menyimpan stores:", err);
   }
+
+  return { success: localSaved, supabaseSynced: false };
 }
 
 /**
@@ -248,23 +320,55 @@ export function getStoredProducts(): Product[] {
 }
 
 /**
- * Menyimpan data Produk ke localStorage & sinkronisasi ke Supabase jika terhubung.
+ * Cache data Produk langsung ke localStorage (tanpa trigger sync balik ke Supabase).
  */
-export async function saveStoredProducts(products: Product[]): Promise<void> {
+export function cacheStoredProductsLocally(products: Product[]): void {
   if (typeof window === "undefined") return;
   try {
     localStorage.setItem(STORAGE_KEY_PRODUCTS, JSON.stringify(products));
-    window.dispatchEvent(new CustomEvent(DATA_UPDATE_EVENT, { detail: { type: "products" } }));
+  } catch (err) {
+    console.error("Gagal cache products ke localStorage:", err);
+  }
+}
 
-    // Sinkronisasi ke Supabase
-    if (isSupabaseConfigured() && supabase) {
+/**
+ * Menyimpan data Produk ke localStorage & sinkronisasi ke Supabase jika terhubung.
+ */
+export async function saveStoredProducts(
+  products: Product[],
+  syncToSupabase: boolean = true
+): Promise<{ success: boolean; supabaseSynced: boolean; error?: string }> {
+  if (typeof window === "undefined") return { success: false, supabaseSynced: false };
+  let localSaved = false;
+  try {
+    localStorage.setItem(STORAGE_KEY_PRODUCTS, JSON.stringify(products));
+    localSaved = true;
+    window.dispatchEvent(new CustomEvent(DATA_UPDATE_EVENT, { detail: { type: "products" } }));
+  } catch (err: unknown) {
+    console.error("Gagal menyimpan products ke localStorage:", err);
+    if ((err as Error)?.name === "QuotaExceededError") {
+      return { success: false, supabaseSynced: false, error: "Ukuran gambar terlalu besar untuk memori browser (QuotaExceeded)!" };
+    }
+  }
+
+  // Sinkronisasi ke Supabase
+  if (syncToSupabase && isSupabaseConfigured() && supabase) {
+    try {
       const rows = products.map((p, idx) => mapProductToDbRow(p, idx + 1));
       const { error } = await supabase.from("products").upsert(rows);
-      if (error) console.error("Gagal sinkronisasi products ke Supabase:", error.message);
+      if (error) {
+        console.error("Gagal sinkronisasi products ke Supabase:", error.message);
+        return { success: localSaved, supabaseSynced: false, error: error.message };
+      }
+      return { success: true, supabaseSynced: true };
+    } catch (err: unknown) {
+      console.error("Exception saat sync products ke Supabase:", err);
+      const errorMsg = err instanceof Error ? err.message : "Koneksi Supabase terputus";
+      return { success: localSaved, supabaseSynced: false, error: errorMsg };
     }
-  } catch (err) {
-    console.error("Gagal menyimpan products:", err);
   }
+
+  return { success: localSaved, supabaseSynced: false };
 }
 
 /**
@@ -297,16 +401,37 @@ export function getStoredConfig(): SiteConfig {
 }
 
 /**
- * Menyimpan konfigurasi website & kontak ke localStorage & sinkronisasi ke Supabase jika terhubung.
+ * Cache data Config langsung ke localStorage (tanpa trigger sync balik ke Supabase).
  */
-export async function saveStoredConfig(config: SiteConfig): Promise<void> {
+export function cacheStoredConfigLocally(config: SiteConfig): void {
   if (typeof window === "undefined") return;
   try {
     localStorage.setItem(STORAGE_KEY_CONFIG, JSON.stringify(config));
-    window.dispatchEvent(new CustomEvent(DATA_UPDATE_EVENT, { detail: { type: "config" } }));
+  } catch (err) {
+    console.error("Gagal cache config ke localStorage:", err);
+  }
+}
 
-    // Sinkronisasi ke Supabase
-    if (isSupabaseConfigured() && supabase) {
+/**
+ * Menyimpan konfigurasi website & kontak ke localStorage & sinkronisasi ke Supabase jika terhubung.
+ */
+export async function saveStoredConfig(
+  config: SiteConfig,
+  syncToSupabase: boolean = true
+): Promise<{ success: boolean; supabaseSynced: boolean; error?: string }> {
+  if (typeof window === "undefined") return { success: false, supabaseSynced: false };
+  let localSaved = false;
+  try {
+    localStorage.setItem(STORAGE_KEY_CONFIG, JSON.stringify(config));
+    localSaved = true;
+    window.dispatchEvent(new CustomEvent(DATA_UPDATE_EVENT, { detail: { type: "config" } }));
+  } catch (err: unknown) {
+    console.error("Gagal menyimpan config ke localStorage:", err);
+  }
+
+  // Sinkronisasi ke Supabase
+  if (syncToSupabase && isSupabaseConfigured() && supabase) {
+    try {
       const dbRow = {
         id: "main",
         brand_name: config.brandName,
@@ -320,11 +445,19 @@ export async function saveStoredConfig(config: SiteConfig): Promise<void> {
         updated_at: new Date().toISOString(),
       };
       const { error } = await supabase.from("site_config").upsert(dbRow);
-      if (error) console.error("Gagal sinkronisasi config ke Supabase:", error.message);
+      if (error) {
+        console.error("Gagal sinkronisasi config ke Supabase:", error.message);
+        return { success: localSaved, supabaseSynced: false, error: error.message };
+      }
+      return { success: true, supabaseSynced: true };
+    } catch (err: unknown) {
+      console.error("Exception saat sync config ke Supabase:", err);
+      const errorMsg = err instanceof Error ? err.message : "Koneksi Supabase terputus";
+      return { success: localSaved, supabaseSynced: false, error: errorMsg };
     }
-  } catch (err) {
-    console.error("Gagal menyimpan config:", err);
   }
+
+  return { success: localSaved, supabaseSynced: false };
 }
 
 /**

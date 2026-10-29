@@ -150,7 +150,7 @@ export async function fetchStoresFromSupabase(): Promise<StoreLocation[] | null>
       console.warn("Supabase fetch stores error:", error.message);
       return null;
     }
-    if (data && data.length > 0) {
+    if (data && Array.isArray(data)) {
       return data.map(mapDbRowToStore);
     }
     return null;
@@ -172,7 +172,7 @@ export async function fetchProductsFromSupabase(): Promise<Product[] | null> {
       console.warn("Supabase fetch products error:", error.message);
       return null;
     }
-    if (data && data.length > 0) {
+    if (data && Array.isArray(data)) {
       return data.map(mapDbRowToProduct);
     }
     return null;
@@ -251,7 +251,7 @@ export function cacheStoredStoresLocally(stores: StoreLocation[]): void {
 }
 
 /**
- * Menyimpan data Toko ke localStorage & sinkronisasi ke Supabase jika terhubung.
+ * Menyimpan data Toko ke localStorage & sinkronisasi massal ke Supabase jika terhubung.
  */
 export async function saveStoredStores(
   stores: StoreLocation[],
@@ -282,6 +282,49 @@ export async function saveStoredStores(
       return { success: true, supabaseSynced: true };
     } catch (err: unknown) {
       console.error("Exception saat sync stores ke Supabase:", err);
+      const errorMsg = err instanceof Error ? err.message : "Koneksi Supabase terputus";
+      return { success: localSaved, supabaseSynced: false, error: errorMsg };
+    }
+  }
+
+  return { success: localSaved, supabaseSynced: false };
+}
+
+/**
+ * Menyimpan / update HANYA SATU toko ke Supabase dan memperbarui cache lokal.
+ * Mencegah penimpaan massal (bulk overwrite) data toko lain yang sudah ada di Supabase.
+ */
+export async function saveSingleStoreToSupabase(
+  store: StoreLocation,
+  orderIndex: number = 1
+): Promise<{ success: boolean; supabaseSynced: boolean; error?: string }> {
+  let localSaved = false;
+  if (typeof window !== "undefined") {
+    try {
+      const current = getStoredStores();
+      const exists = current.some((s) => s.id === store.id);
+      const updated = exists
+        ? current.map((s) => (s.id === store.id ? store : s))
+        : [...current, store];
+      localStorage.setItem(STORAGE_KEY_STORES, JSON.stringify(updated));
+      localSaved = true;
+      window.dispatchEvent(new CustomEvent(DATA_UPDATE_EVENT, { detail: { type: "stores" } }));
+    } catch (err) {
+      console.error("Gagal update single store ke localStorage:", err);
+    }
+  }
+
+  if (isSupabaseConfigured() && supabase) {
+    try {
+      const row = mapStoreToDbRow(store, orderIndex);
+      const { error } = await supabase.from("stores").upsert(row);
+      if (error) {
+        console.error("Gagal sinkronisasi single store ke Supabase:", error.message);
+        return { success: localSaved, supabaseSynced: false, error: error.message };
+      }
+      return { success: true, supabaseSynced: true };
+    } catch (err: unknown) {
+      console.error("Exception saat sync single store ke Supabase:", err);
       const errorMsg = err instanceof Error ? err.message : "Koneksi Supabase terputus";
       return { success: localSaved, supabaseSynced: false, error: errorMsg };
     }
@@ -332,7 +375,7 @@ export function cacheStoredProductsLocally(products: Product[]): void {
 }
 
 /**
- * Menyimpan data Produk ke localStorage & sinkronisasi ke Supabase jika terhubung.
+ * Menyimpan data Produk ke localStorage & sinkronisasi massal ke Supabase jika terhubung.
  */
 export async function saveStoredProducts(
   products: Product[],
@@ -363,6 +406,49 @@ export async function saveStoredProducts(
       return { success: true, supabaseSynced: true };
     } catch (err: unknown) {
       console.error("Exception saat sync products ke Supabase:", err);
+      const errorMsg = err instanceof Error ? err.message : "Koneksi Supabase terputus";
+      return { success: localSaved, supabaseSynced: false, error: errorMsg };
+    }
+  }
+
+  return { success: localSaved, supabaseSynced: false };
+}
+
+/**
+ * Menyimpan / update HANYA SATU produk ke Supabase dan memperbarui cache lokal.
+ * Mencegah penimpaan massal (bulk overwrite) data produk lain yang sudah ada di Supabase.
+ */
+export async function saveSingleProductToSupabase(
+  product: Product,
+  orderIndex: number = 1
+): Promise<{ success: boolean; supabaseSynced: boolean; error?: string }> {
+  let localSaved = false;
+  if (typeof window !== "undefined") {
+    try {
+      const current = getStoredProducts();
+      const exists = current.some((p) => p.id === product.id);
+      const updated = exists
+        ? current.map((p) => (p.id === product.id ? product : p))
+        : [...current, product];
+      localStorage.setItem(STORAGE_KEY_PRODUCTS, JSON.stringify(updated));
+      localSaved = true;
+      window.dispatchEvent(new CustomEvent(DATA_UPDATE_EVENT, { detail: { type: "products" } }));
+    } catch (err) {
+      console.error("Gagal update single product ke localStorage:", err);
+    }
+  }
+
+  if (isSupabaseConfigured() && supabase) {
+    try {
+      const row = mapProductToDbRow(product, orderIndex);
+      const { error } = await supabase.from("products").upsert(row);
+      if (error) {
+        console.error("Gagal sinkronisasi single product ke Supabase:", error.message);
+        return { success: localSaved, supabaseSynced: false, error: error.message };
+      }
+      return { success: true, supabaseSynced: true };
+    } catch (err: unknown) {
+      console.error("Exception saat sync single product ke Supabase:", err);
       const errorMsg = err instanceof Error ? err.message : "Koneksi Supabase terputus";
       return { success: localSaved, supabaseSynced: false, error: errorMsg };
     }

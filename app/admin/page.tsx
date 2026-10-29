@@ -102,9 +102,13 @@ export default function AdminPage() {
     products,
     config,
     isSupabaseConnected,
+    isCloudLoading,
+    refreshFromCloud,
     saveStores,
+    saveSingleStore,
     deleteStore,
     saveProducts,
+    saveSingleProduct,
     deleteProduct,
     saveConfig,
   } = useSiteData();
@@ -335,7 +339,7 @@ export default function AdminPage() {
       updatedStores = [...stores, storeFormData];
     }
 
-    const res = await saveStores(updatedStores);
+    const res = await saveSingleStore(storeFormData);
     setIsStoreModalOpen(false);
 
     if (res?.error) {
@@ -512,7 +516,7 @@ export default function AdminPage() {
       updatedProducts = [...products, payload];
     }
 
-    const res = await saveProducts(updatedProducts);
+    const res = await saveSingleProduct(payload);
     setIsProductModalOpen(false);
 
     if (res?.error) {
@@ -558,6 +562,19 @@ export default function AdminPage() {
     shopeePusat: config.socials?.shopeePusat || "",
     instagram: config.socials?.instagram || "",
   });
+
+  useEffect(() => {
+    setConfigFormData({
+      brandName: config.brandName || "PC Store",
+      tagline: config.tagline || "",
+      description: config.description || "",
+      waPhoneNumber: config.adminWhatsApp?.phoneNumber || "",
+      waDefaultMessage: config.adminWhatsApp?.defaultMessage || "",
+      tiktok: config.socials?.tiktok || "",
+      shopeePusat: config.socials?.shopeePusat || "",
+      instagram: config.socials?.instagram || "",
+    });
+  }, [config]);
 
   const [passwordChangeData, setPasswordChangeData] = useState({
     newUsername: adminCreds.username,
@@ -759,7 +776,12 @@ export default function AdminPage() {
                   <ShieldCheck className="w-3 h-3" />
                   <span>Terautentikasi</span>
                 </span>
-                {isSupabaseConnected ? (
+                {isCloudLoading ? (
+                  <span className="text-[10px] bg-blue-950 text-blue-300 px-2 py-0.5 rounded border border-blue-800 flex items-center gap-1">
+                    <Loader2 className="w-3 h-3 animate-spin text-blue-400" />
+                    <span>Sinkronisasi Cloud...</span>
+                  </span>
+                ) : isSupabaseConnected ? (
                   <span className="text-[10px] bg-emerald-950 text-emerald-300 px-2 py-0.5 rounded border border-emerald-800 flex items-center gap-1">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                     <span>Supabase Terhubung</span>
@@ -778,6 +800,25 @@ export default function AdminPage() {
           </div>
 
           <div className="flex items-center gap-2.5 w-full sm:w-auto justify-end">
+            <button
+              type="button"
+              onClick={async () => {
+                showToast("Memuat data terbaru dari Supabase...", "info");
+                const ok = await refreshFromCloud();
+                if (ok) {
+                  showToast("Data terbaru berhasil dimuat dari Supabase!", "success");
+                } else {
+                  showToast("Gagal memuat dari Supabase, periksa koneksi atau .env.local", "error");
+                }
+              }}
+              disabled={isCloudLoading}
+              className="px-3 py-1.5 text-xs font-semibold text-slate-200 hover:text-white bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded flex items-center gap-1.5 disabled:opacity-50 transition-colors"
+              title="Tarik data paling fresh dari Supabase"
+            >
+              <RotateCcw className={`w-3.5 h-3.5 ${isCloudLoading ? "animate-spin text-blue-400" : ""}`} />
+              <span>{isCloudLoading ? "Memuat..." : "Tarik Data Cloud"}</span>
+            </button>
+
             <Link
               href="/"
               target="_blank"
@@ -800,6 +841,19 @@ export default function AdminPage() {
 
       {/* Main Container */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 pt-6 space-y-6">
+        {isCloudLoading && (
+          <div className="bg-blue-50 border border-blue-200 text-blue-900 px-4 py-3 rounded text-xs flex items-center justify-between gap-3 shadow-xs">
+            <div className="flex items-center gap-2">
+              <Loader2 className="w-4 h-4 animate-spin text-blue-600 shrink-0" />
+              <span className="font-medium">
+                Sedang memuat data terbaru dari Supabase... Mohon tunggu sebentar sebelum mengedit agar tidak menimpa data terbaru.
+              </span>
+            </div>
+            <span className="text-[10px] bg-blue-100 text-blue-700 px-2 py-0.5 rounded font-mono font-semibold">
+              Menyinkronkan
+            </span>
+          </div>
+        )}
         {/* Quick Stats Cards: Flat & Clean */}
         <section className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="bg-white border border-slate-200 rounded p-4">
@@ -1417,7 +1471,8 @@ export default function AdminPage() {
               <div className="pt-2 flex justify-end">
                 <button
                   type="submit"
-                  className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm font-semibold flex items-center gap-2"
+                  disabled={isCloudLoading}
+                  className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white rounded text-sm font-semibold flex items-center gap-2 transition-opacity"
                 >
                   <Save className="w-4 h-4" />
                   <span>Simpan Pengaturan</span>
@@ -1446,7 +1501,12 @@ export default function AdminPage() {
                 </div>
 
                 <div className="flex items-center gap-2">
-                  {isSupabaseConnected ? (
+                  {isCloudLoading ? (
+                  <span className="text-[10px] bg-blue-950 text-blue-300 px-2 py-0.5 rounded border border-blue-800 flex items-center gap-1">
+                    <Loader2 className="w-3 h-3 animate-spin text-blue-400" />
+                    <span>Sinkronisasi Cloud...</span>
+                  </span>
+                ) : isSupabaseConnected ? (
                     <span className="text-xs font-semibold px-2.5 py-1 bg-emerald-100 text-emerald-800 rounded flex items-center gap-1.5">
                       <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse" />
                       <span>Terhubung ke Supabase</span>
@@ -1872,7 +1932,8 @@ export default function AdminPage() {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded"
+                  disabled={isCloudLoading}
+                  className="px-4 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 rounded transition-opacity"
                 >
                   Simpan Toko &amp; Pin
                 </button>
@@ -2168,7 +2229,8 @@ export default function AdminPage() {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded"
+                  disabled={isCloudLoading}
+                  className="px-4 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 rounded transition-opacity"
                 >
                   Simpan Produk
                 </button>

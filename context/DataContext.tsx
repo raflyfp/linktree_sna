@@ -158,9 +158,10 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // 3. Supabase Realtime Listener (Jika ada perubahan dari tab/device lain)
   useEffect(() => {
     if (!isSupabaseConfigured() || !supabase) return;
+    const client = supabase;
 
     try {
-      const channel = supabase
+      const channel = client
         .channel("pc_store_realtime_changes")
         .on("postgres_changes", { event: "*", schema: "public", table: "stores" }, () => {
           fetchStoresFromSupabase().then((data) => {
@@ -189,7 +190,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
         .subscribe();
 
       return () => {
-        supabase.removeChannel(channel);
+        client.removeChannel(channel);
       };
     } catch (err) {
       console.warn("Realtime subscription error (ignorable):", err);
